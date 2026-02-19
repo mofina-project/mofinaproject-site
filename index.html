@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>お話の森 | mofinaproject</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="screen">
+    <section class="panel" aria-label="お話の森 対話エリア">
+
+      <header class="banner">
+        <h1>🌿 お話の森へようこそ</h1>
+        <p>もふぃなと、お話できる場所です。</p>
+      </header>
+
+      <section class="chat" aria-label="チャットエリア">
+        <div id="chatLog" class="chatLog" aria-live="polite"></div>
+
+        <form id="chatForm" class="chatForm" onsubmit="return false;">
+
+          <input
+            id="chatInput"
+            class="chatInput"
+            type="text"
+            maxlength="300"
+            placeholder="もふぃなに話しかけてね…"
+            autocomplete="off"
+          />
+          <button id="chatBtn" class="chatBtn" type="submit">送信</button>
+        </form>
+
+        <p class="chatHint">※送信すると数秒かかることがあります。</p>
+      </section>
+
+      <footer class="notice" aria-label="注意書き">
+        <p>※ここでのお話は保存されません。</p>
+        <p>※名前・住所・電話番号などは書かないでね。</p>
+      </footer>
+
+    </section>
+  </main>
+
+<script>
+const log = document.getElementById("chatLog");
+const form = document.getElementById("chatForm");
+const input = document.getElementById("chatInput");
+const btn = document.getElementById("chatBtn");
+
+// HTMLエスケープ（XSS対策）
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+  }[m]));
+}
+
+// メッセージをログに追加
+function add(role, text){
+  const row = document.createElement("div");
+  row.className = "msg " + (role === "user" ? "user" : "bot");
+  row.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;
+  log.appendChild(row);
+  log.scrollTop = log.scrollHeight;
+  return row;
+}
+
+function setDisabled(disabled){
+  input.disabled = disabled;
+  btn.disabled = disabled;
+  btn.textContent = disabled ? "送信中…" : "送信";
+}
+
+// 送信処理
+async function sendMessage(message){
+  // UI
+  add("user", message);
+  const thinkingRow = add("bot", "…（もふぃなが考えてるよ🍃）");
+
+  setDisabled(true);
+
+  try{
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+
+    // HTTPエラーも拾う
+    if(!res.ok){
+      thinkingRow.querySelector(".bubble").textContent =
+        `通信エラーだよ…（${res.status}）時間をおいてもう一度試してね`;
+      return;
+    }
+
+    const data = await res.json().catch(() => ({}));
+    const reply = data.reply || "…（うまく言葉が出なかったみたい）";
+
+    // thinking を置換
+    thinkingRow.querySelector(".bubble").textContent = reply;
+
+  }catch(e){
+    thinkingRow.querySelector(".bubble").textContent =
+      "通信に失敗したよ…（時間をおいてもう一度）";
+  }finally{
+    setDisabled(false);
+    input.focus();
+  }
+}
+
+// submitハンドラ
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const message = input.value.trim();
+  if(!message) return;
+
+  // 入力クリアして送信
+  input.value = "";
+  sendMessage(message);
+});
+
+// 初期フォーカス
+input.focus();
+</script>
+
+</body>
+</html>
+
