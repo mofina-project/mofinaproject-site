@@ -34,7 +34,7 @@ body {
   width:100%;
   max-width:680px;
 
-  margin-left; 30%;
+  margin-left; 25%;
 
   background:var(--panel);
   backdrop-filter:blur(10px);
