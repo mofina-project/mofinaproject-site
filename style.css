@@ -21,7 +21,7 @@ body {
     url("/assets/bg.jpg") center/cover no-repeat fixed;
 
   min-height: 100vh;
-}}
+}
 
 .screen{
   display:flex;
@@ -33,6 +33,9 @@ body {
 .panel{
   width:100%;
   max-width:680px;
+
+  margin-left; 30%;
+
   background:var(--panel);
   backdrop-filter:blur(10px);
   border-radius:18px;
