@@ -17,7 +17,7 @@ body{
 
   /* 🔥 背景画像＋暗幕 */
   background:
-    linear-gradient(rgba(15,23,20,0.70), rgba(15,23,20,0.88)),
+    linear-gradient(rgba(15,23,20,0.2), rgba(15,23,20,0.4)), /* ここを薄くするニャ */
     url("/assets/bg.jpg") center/cover no-repeat fixed;
 
   min-height:100vh;
