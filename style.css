@@ -10,18 +10,18 @@
   box-sizing:border-box;
 }
 
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",sans-serif;
-  color:var(--text);
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", sans-serif;
+  color: var(--text);
 
-  /* 🔥 背景画像＋暗幕 */
+  /* 🌿 「朝の静けさ」を感じる明るい設定に変更したニャ！ */
   background:
-    linear-gradient(rgba(15,23,20,0.2), rgba(15,23,20,0.4)), /* ここを薄くするニャ */
+    linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.3)), /* 白い霧のような透明感 */
     url("/assets/bg.jpg") center/cover no-repeat fixed;
 
-  min-height:100vh;
-}
+  min-height: 100vh;
+}}
 
 .screen{
   display:flex;
