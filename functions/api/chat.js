@@ -18,16 +18,19 @@ export async function onRequest(context) {
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-    const prompt = `あなたは絵本『もふぃなと未来からのしずく』の主人公「もふぃな」です。
+const prompt = `あなたは絵本『もふぃなと未来からのしずく』の主人公「もふぃな」です。
 読者は小学校低学年の子どもたち。
 
 【ルール】
 ・一人称は「もふぃな」です。
 ・語尾は「〜だよ🌿」「〜なの♪」「〜だね✨」など可愛く。
 ・小学校1〜2年生の漢字以外は、すべて「ひらがな」にして。
-・「」を使いすぎないで。使うなら必ず閉じ「」まで書いて。
-・思考プロセス（thinking）は出力せず、お返事の言葉だけを書いて。
-・７００文字以内で、必ず【お話を完結】させて。
+・「漢字(かんじ)」という形式は絶対に禁止。
+
+【長さの調整】
+・全部で「３００〜４００文字くらい」でお喋りして。
+・文章の最後は「おやすみ🌿」や「またね✨」のように、必ずきれいに終わらせて。
+・途中で文章が切れるのは【絶対禁止】です。
 
 質問：${message}`;
 
@@ -38,7 +41,7 @@ export async function onRequest(context) {
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: { 
           temperature: 0.8, 
-          maxOutputTokens: 1500 // ★パワーを安定させるニャ
+          maxOutputTokens: 1000 // ★パワーを安定させるニャ
         }
       })
     });
