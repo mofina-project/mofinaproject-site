@@ -82,7 +82,11 @@ body {
   word-break: break-word;
   /* ★ これが重要！もふぃなの改行やふりがなを全部見せる魔法ニャ！ */
   white-space: pre-wrap; 
+  display: block;      /* 吹き出しをしっかりした箱にするニャ */
+  height: auto;        /* 高さを中身に合わせるニャ */
+  overflow: visible;   /* はみ出しても全部見せるニャ */
 }
+
 
 .msg.user .bubble {
   background: var(--accent);
