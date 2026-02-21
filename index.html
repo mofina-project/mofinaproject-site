@@ -6,127 +6,53 @@
   <title>お話の森 | mofinaproject</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
   <main class="screen">
-    <section class="panel" aria-label="お話の森 対話エリア">
-
+    <section class="panel">
       <header class="banner">
         <h1>🌿 お話の森へようこそ</h1>
         <p>もふぃなと、お話できる場所です。</p>
       </header>
-
-      <section class="chat" aria-label="チャットエリア">
-        <div id="chatLog" class="chatLog" aria-live="polite"></div>
-
-        <form id="chatForm" class="chatForm" onsubmit="return false;">
-          <input
-            id="chatInput"
-            class="chatInput"
-            type="text"
-            maxlength="300"
-            placeholder="もふぃなに話しかけてね…"
-            autocomplete="off"
-          />
-          <button id="chatBtn" class="chatBtn" type="submit">送信</button>
-        </form>
-
-        <p class="chatHint">※送信すると数秒かかることがあります。</p>
-      </section>
-
-      <footer class="notice" aria-label="注意書き">
-        <p>※ここでのお話は保存されません。</p>
-        <p>※名前・住所・電話番号などは書かないでね。</p>
-      </footer>
-
+      <div id="chatLog" class="chatLog"></div>
+      <form id="chatForm" class="chatForm" onsubmit="return false;">
+        <input id="chatInput" class="chatInput" type="text" placeholder="もふぃなに話しかけてね…" autocomplete="off" />
+        <button id="chatBtn" class="chatBtn" type="submit">送信</button>
+      </form>
     </section>
   </main>
 
 <script>
 const log = document.getElementById("chatLog");
-const form = document.getElementById("chatForm");
 const input = document.getElementById("chatInput");
-const btn = document.getElementById("chatBtn");
+const form = document.getElementById("chatForm");
 
-// HTMLエスケープ（XSS対策）
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, m => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
-  }[m]));
-}
-
-// メッセージをログに追加
-function add(role, text){
+function add(role, text) {
   const row = document.createElement("div");
   row.className = "msg " + (role === "user" ? "user" : "bot");
-  row.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;
+  row.innerHTML = `<div class="bubble">${text}</div>`;
   log.appendChild(row);
-  log.scrollTop = log.scrollHeight; // 新しい吹き出しが出た時にスクロール
+  log.scrollTop = log.scrollHeight;
   return row;
 }
 
-function setDisabled(disabled){
-  input.disabled = disabled;
-  btn.disabled = disabled;
-  btn.textContent = disabled ? "送信中…" : "送信";
-}
-
-// 送信処理
-async function sendMessage(message){
-  // ユーザーの声を画面に出す
-  add("user", message);
-  // 「考え中」を出す
-  const thinkingRow = add("bot", "…（もふぃなが考えてるよ🍃）");
-
-  setDisabled(true);
-
-  try{
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message })
-    });
-
-    if(!res.ok){
-      thinkingRow.querySelector(".bubble").textContent =
-        `通信エラーだよ…（${res.status}）時間をおいてもう一度試してね`;
-      return;
-    }
-
-    const data = await res.json().catch(() => ({}));
-    const reply = data.reply || "…（うまく言葉が出なかったみたい）";
-
-    // ★ここで長いお返事に書き換えるニャ！
-    thinkingRow.querySelector(".bubble").textContent = reply;
-    
-    // ★ここが大事！長いお返事が入った瞬間に、一番下までスクロールさせるニャ！
-    log.scrollTop = log.scrollHeight;
-
-  }catch(e){
-    thinkingRow.querySelector(".bubble").textContent =
-      "通信に失敗したよ…（時間をおいてもう一度）";
-  }finally{
-    setDisabled(false);
-    input.focus();
-  }
-}
-
-// submitハンドラ（onsubmitの代わりだニャ！）
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-
+form.addEventListener("submit", async () => {
   const message = input.value.trim();
   if(!message) return;
-
-  // 入力クリアして送信
   input.value = "";
-  sendMessage(message);
+  
+  add("user", message);
+  const thinking = add("bot", "…（もふぃなが考えてるよ🍃）");
+
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message })
+  });
+  
+  const data = await res.json();
+  thinking.querySelector(".bubble").textContent = data.reply;
+  log.scrollTop = log.scrollHeight; // お返事が入った後にもう一度スクロール！
 });
-
-// 初期フォーカス
-input.focus();
 </script>
-
 </body>
 </html>
-
