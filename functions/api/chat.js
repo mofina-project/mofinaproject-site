@@ -21,7 +21,6 @@ export async function onRequest(context) {
     return new Response(`Method Not Allowed: ${method}`, { status: 405 });
   }
 
-  // ★ キーの前後のスペースを消すおまじない
   const GEMINI_API_KEY = (env.GEMINI_API_KEY || "").trim();
   if (!GEMINI_API_KEY) {
     return json({ reply: "APIキーが見つからないよ（GEMINI_API_KEY未設定）" }, 200);
@@ -38,8 +37,8 @@ export async function onRequest(context) {
     return json({ reply: "ごめんね、300文字以内でお願い🍃" }, 200);
   }
 
-const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent?key=${GEMINI_API_KEY}`;`
-
+  // ★ 窓口は v1beta、モデルは gemini-1.5-pro (一番賢い王様) にしたニャ！
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;
 
   const prompt = `あなたは絵本『もふぃなと未来からのしずく』の主人公「もふぃな」です。
 種族：森の妖精（ミントリーフの一族）
@@ -64,7 +63,6 @@ const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-fl
     });
 
     if (!upstream.ok) {
-      // ★ エラーの正体を画面に出す魔法！
       const errorText = await upstream.text().catch(() => "不明なエラー");
       return json({ reply: `APIエラーだニャ: ${upstream.status} ${errorText}` }, 200);
     }
@@ -76,7 +74,6 @@ const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-fl
 
     return json({ reply }, 200);
   } catch (error) {
-    // fetch自体が失敗した時
     return json({ reply: `通信中にトラブルが起きたニャ: ${error.message}` }, 200);
   }
 }
