@@ -38,7 +38,7 @@ export async function onRequest(context) {
     return json({ reply: "ごめんね、300文字以内でお願い🍃" }, 200);
   }
 
-const url = `https://generativelanguage.googleapis.com/v1/models/gemini-3-flash:generateContent?key=${GEMINI_API_KEY}`;
+const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`;
 
 
   const prompt = `あなたは絵本『もふぃなと未来からのしずく』の主人公「もふぃな」です。
