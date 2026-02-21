@@ -38,7 +38,7 @@ export async function onRequest(context) {
   }
 
   // ★ 窓口は v1beta、モデルは最新の gemini-3-flash にしたニャ！
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=${GEMINI_API_KEY}`;
+ const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
   const prompt = `あなたは絵本『もふぃなと未来からのしずく』の主人公「もふぃな」です。
 種族：森の妖精（ミントリーフの一族）
