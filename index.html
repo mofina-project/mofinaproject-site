@@ -20,7 +20,6 @@
         <div id="chatLog" class="chatLog" aria-live="polite"></div>
 
         <form id="chatForm" class="chatForm" onsubmit="return false;">
-
           <input
             id="chatInput"
             class="chatInput"
@@ -62,7 +61,7 @@ function add(role, text){
   row.className = "msg " + (role === "user" ? "user" : "bot");
   row.innerHTML = `<div class="bubble">${escapeHtml(text)}</div>`;
   log.appendChild(row);
-  log.scrollTop = log.scrollHeight;
+  log.scrollTop = log.scrollHeight; // 新しい吹き出しが出た時にスクロール
   return row;
 }
 
@@ -74,8 +73,9 @@ function setDisabled(disabled){
 
 // 送信処理
 async function sendMessage(message){
-  // UI
+  // ユーザーの声を画面に出す
   add("user", message);
+  // 「考え中」を出す
   const thinkingRow = add("bot", "…（もふぃなが考えてるよ🍃）");
 
   setDisabled(true);
@@ -87,7 +87,6 @@ async function sendMessage(message){
       body: JSON.stringify({ message })
     });
 
-    // HTTPエラーも拾う
     if(!res.ok){
       thinkingRow.querySelector(".bubble").textContent =
         `通信エラーだよ…（${res.status}）時間をおいてもう一度試してね`;
@@ -97,8 +96,11 @@ async function sendMessage(message){
     const data = await res.json().catch(() => ({}));
     const reply = data.reply || "…（うまく言葉が出なかったみたい）";
 
-    // thinking を置換
+    // ★ここで長いお返事に書き換えるニャ！
     thinkingRow.querySelector(".bubble").textContent = reply;
+    
+    // ★ここが大事！長いお返事が入った瞬間に、一番下までスクロールさせるニャ！
+    log.scrollTop = log.scrollHeight;
 
   }catch(e){
     thinkingRow.querySelector(".bubble").textContent =
@@ -109,7 +111,7 @@ async function sendMessage(message){
   }
 }
 
-// submitハンドラ
+// submitハンドラ（onsubmitの代わりだニャ！）
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
