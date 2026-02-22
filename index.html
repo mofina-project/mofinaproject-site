@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>お話の森 | mofinaproject</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="/assets/mofina.ico" />
 </head>
 <body>
   <main class="screen">
@@ -13,7 +14,9 @@
         <h1>🌿 お話の森へようこそ</h1>
         <p>もふぃなと、お話できる場所です。</p>
       </header>
+
       <div id="chatLog" class="chatLog"></div>
+
       <form id="chatForm" class="chatForm" onsubmit="return false;">
         <input id="chatInput" class="chatInput" type="text" placeholder="もふぃなに話しかけてね…" autocomplete="off" />
         <button id="chatBtn" class="chatBtn" type="submit">送信</button>
@@ -31,7 +34,7 @@ function add(role, text) {
   row.className = "msg " + (role === "user" ? "user" : "bot");
   row.innerHTML = `<div class="bubble">${text}</div>`;
   log.appendChild(row);
-  log.scrollTop = log.scrollHeight;
+  log.scrollTop = log.scrollHeight; // 新しいメッセージが出たら一番下へ
   return row;
 }
 
@@ -43,15 +46,19 @@ form.addEventListener("submit", async () => {
   add("user", message);
   const thinking = add("bot", "…（もふぃなが考えてるよ🍃）");
 
-  const res = await fetch("/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message })
-  });
-  
-  const data = await res.json();
-  thinking.querySelector(".bubble").textContent = data.reply;
-  log.scrollTop = log.scrollHeight; // お返事が入った後にもう一度スクロール！
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+    
+    const data = await res.json();
+    thinking.querySelector(".bubble").textContent = data.reply;
+    log.scrollTop = log.scrollHeight; // お返事が届いたらもう一度一番下へ
+  } catch(e) {
+    thinking.querySelector(".bubble").textContent = "エラーが起きたニャ。もう一度呼んでみて🌿";
+  }
 });
 </script>
 </body>
