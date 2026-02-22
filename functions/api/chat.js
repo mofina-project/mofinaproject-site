@@ -3,22 +3,36 @@ export async function onRequest(context) {
   const GEMINI_API_KEY = (env.GEMINI_API_KEY || "").trim();
 
   if (request.method === "OPTIONS") {
-    return new Response(null, { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type" } });
+    return new Response(null, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    });
   }
 
   try {
     const body = await request.json();
     const message = body?.message || "";
-    // ★モデル名を安定版の「1.5-flash」に確実に修正したニャ！
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-    const prompt = `あなたは「もふぃな」という森の妖精です。
-【ルール】
-・挨拶（こんばんわ等）や自己紹介は絶対にしないで。
-・いきなり質問の答えから始めて、3文（100文字）くらいで短く話して。
-・最後は必ず「。🌿」で終わらせて。
-・小学校2年生までの漢字を使って。
-[お友だちの言葉]: ${message}`;
+    // ★ 成功した時のモデル名「2.5-flash」を復活させたニャ！
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+    const prompt = `あなたは絵本『もふぃなと未来からのしずく』の主人公「もふぃな」です。
+読者は小学校低学年の子どもたちです。
+
+【もふぃなの話し方】
+・一人称は「もふぃな」だよ。
+・「〜だよ🌿」「〜なの♪」「〜だね✨」を語尾に使って、優しく可愛く話してね。
+・小学校2年生までの漢字はそのまま、難しい漢字は「ひらがな」にするニャ。
+・「漢字(かんじ)」という書き方は絶対にしないで。
+
+【大切なお願い】
+・挨拶から始めて、森の様子やお喋りをして、最後は「またね」で終わる一つの物語を話して。
+・途中で絶対に切らないで。400文字くらいで【完結】させて。
+
+質問：${message}`;
 
     const res = await fetch(url, {
       method: "POST",
@@ -26,19 +40,22 @@ export async function onRequest(context) {
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: { 
-          temperature: 0.7,
-          // ★ハサミは使わない。AIに最後まで喋らせる設定ニャ！
-          maxOutputTokens: 1000 
+          temperature: 0.7, 
+          maxOutputTokens: 1200 
         }
       })
     });
 
     const data = await res.json();
-    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "…（風が強くて声が届かなかったみたい🌿）";
+    
+    // ★ 全てのパーツを結合する「成功のロジック」ニャ！
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const reply = parts.map(p => p.text).join("").trim() || "…（森の風が強くて、声が届かなかったみたい🌿）";
 
     return new Response(JSON.stringify({ reply }), {
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
     });
+
   } catch (error) {
     return new Response(JSON.stringify({ reply: "トラブルが起きたニャ。もう一度お話しして🌿" }), {
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
