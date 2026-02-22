@@ -59,7 +59,8 @@ body {
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-all;
-  height: auto !important; /* 絶対に高さを制限しないニャ！ */
+  /* ★ 絶対に途切れない、魔法の高さ設定ニャ！ */
+  height: auto !important;
   display: block !important;
 }
 
