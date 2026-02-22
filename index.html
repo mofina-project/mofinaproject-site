@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>お話の森 | mofinaproject</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="/assets/mofina.ico" />
@@ -34,7 +34,7 @@ function add(role, text) {
   row.className = "msg " + (role === "user" ? "user" : "bot");
   row.innerHTML = `<div class="bubble">${text}</div>`;
   log.appendChild(row);
-  log.scrollTop = log.scrollHeight; // 新しいメッセージが出たら一番下へ
+  log.scrollTop = log.scrollHeight;
   return row;
 }
 
@@ -44,7 +44,7 @@ form.addEventListener("submit", async () => {
   input.value = "";
   
   add("user", message);
-  const thinking = add("bot", "…（もふぃなが考えてるよ🍃）");
+  const thinking = add("bot", "…（もふぃなが おへんじを 考えているよ🍃）");
 
   try {
     const res = await fetch("/api/chat", {
@@ -55,7 +55,7 @@ form.addEventListener("submit", async () => {
     
     const data = await res.json();
     thinking.querySelector(".bubble").textContent = data.reply;
-    log.scrollTop = log.scrollHeight; // お返事が届いたらもう一度一番下へ
+    log.scrollTop = log.scrollHeight;
   } catch(e) {
     thinking.querySelector(".bubble").textContent = "エラーが起きたニャ。もう一度呼んでみて🌿";
   }
