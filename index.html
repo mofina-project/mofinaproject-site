@@ -19,27 +19,48 @@
     const input = document.getElementById("chatInput");
     const form = document.getElementById("chatForm");
 
+    let chatHistory = [];
+    let lastActiveTime = Date.now(); // ★ 最後に喋った時間を記録するニャ
+
     function add(role, text) {
       const row = document.createElement("div");
       row.className = "msg " + (role === "user" ? "user" : "bot");
       row.innerHTML = `<div class="bubble">${text}</div>`;
       log.appendChild(row);
-      log.scrollTop = log.scrollHeight; // ★ お話が隠れないように自動スクロール
+      log.scrollTop = log.scrollHeight;
       return row;
     }
 
     form.addEventListener("submit", async () => {
       const msg = input.value.trim(); if(!msg) return; input.value = "";
-      add("user", msg);
-      const th = add("bot", "…もふぃなが考えているよ🍃");
-      try {
-        const res = await fetch("/api/chat", { method: "POST", body: JSON.stringify({ message: msg }) });
-        const data = await res.json();
-        th.querySelector(".bubble").textContent = data.reply;
-        log.scrollTop = log.scrollHeight;
-      } catch(e) { 
-        th.querySelector(".bubble").textContent = "通信が切れちゃったみたいニャ🌿"; 
+      
+      // ★ 魔法：１０分以上（600,000ミリ秒）経っていたら記憶を消すニャ！
+      const now = Date.now();
+      if (now - lastActiveTime > 600000) {
+        chatHistory = [];
+        console.log("もふぃなは１０分お休みしたので、前の話を忘れちゃったニャ🌿");
       }
+      lastActiveTime = now; // 時間を更新するニャ
+
+      add("user", msg);
+      const th = add("bot", "…考え中🍃");
+
+      try {
+        const res = await fetch("/api/chat", { 
+          method: "POST", 
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg, history: chatHistory }) 
+        });
+        const data = await res.json();
+        const reply = data.reply;
+
+        th.querySelector(".bubble").textContent = reply;
+        
+        chatHistory.push({ role: "user", parts: [{ text: msg }] });
+        chatHistory.push({ role: "model", parts: [{ text: reply }] });
+
+        log.scrollTop = log.scrollHeight;
+      } catch(e) { th.querySelector(".bubble").textContent = "エラーだニャ🌿"; }
     });
   </script>
 </body>
