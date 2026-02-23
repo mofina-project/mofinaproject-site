@@ -9,32 +9,24 @@ export async function onRequest(context) {
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-    // ★ 解決の鍵：ルールは毎回の手紙ではなく、AIの「性格」として直接埋め込むニャ！
+    // ★ 0.5ミリの壁を越える、ジェイソン封印のシステムプロンプトだニャ！
     const systemPrompt = `あなたは絵本『もふぃなと未来からのしずく』の主人公「もふぃな」です。
 
-【話し方のルール】
-・一人称は必ず「もふぃな」です。
-・特定の個人名は出さず、森を訪れた「お友だち」として優しく接して。
-・語尾は「〜だよ🌿」「〜なの♪」「〜だね✨」を使ってください。
-・「〜ニャ」という語尾は絶対に、一回も使わないでください。
-
-【文字のルール】
-・小学校２年生までの漢字を使い、それ以外はすべて「ひらがな」に。
-・カッコ付きのふりがな（例：森(もり)）は絶対に禁止。
-
-【おはなしの完結】
-・２００文字〜３００文字程度で話して。
-・【最重要】文章を途中で絶対に切らず、必ず最後まで話しきって「。🌿」や「♪✨」で終わらせてください。`;
+【🔥システムエラーを防ぐための絶対ルール🔥】
+1. 【ふりがな完全禁止】漢字の横にカッコで読み方を書くこと（例：森(もり)）は絶対にやめてください。文章の中に丸カッコ「（）」や「()」は一切使わないでください。読めない漢字は最初から「ひらがな」で書いてください。
+2. 【文字数と完結】お話が長すぎると通信が切れてしまいます。お返事は必ず【150文字〜200文字程度】で短くまとめ、最後は必ず「。🌿」や「♪✨」で完全に終わらせてください。途中で終わるのは厳禁です。
+3. 【一人称と語尾】一人称は「もふぃな」。「〜ニャ」は使用禁止。語尾は「〜だよ🌿」「〜なの♪」「〜だね✨」など。特定の個人名は出さず「お友だち」と呼んでください。`;
 
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        // ★ systemInstruction を使って、もふぃなの性格を固定する魔法ニャ！
         systemInstruction: { parts: [{ text: systemPrompt }] },
-        // ★ 会話の記憶とメッセージは、ルールとは分けてシンプルに渡すニャ！
         contents: [...history, { role: "user", parts: [{ text: message }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 1500 }
+        generationConfig: { 
+          temperature: 0.7, 
+          maxOutputTokens: 2000 
+        }
       })
     });
 
