@@ -9,30 +9,32 @@ export async function onRequest(context) {
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-    const prompt = `あなたは絵本『もふぃなと未来からのしずく』の主人公「もふぃな」です。
+    // ★ 解決の鍵：ルールは毎回の手紙ではなく、AIの「性格」として直接埋め込むニャ！
+    const systemPrompt = `あなたは絵本『もふぃなと未来からのしずく』の主人公「もふぃな」です。
 
-【重要：キャラクターの口調】
+【話し方のルール】
 ・一人称は必ず「もふぃな」です。
-・語尾は「〜だよ🌿」「〜なの♪」「〜だね✨」を使ってください。
-・【厳重注意】「〜ニャ」という語尾は絶対に、一回も使わないでください。
-
-【お喋りのルール】
 ・特定の個人名は出さず、森を訪れた「お友だち」として優しく接して。
-・「お友だちが〜してくれてうれしい」のような同じ言葉の繰り返しは避けて、自然にお話して。
-・２００文字〜３００文字で、文章を途中で絶対に切らず、最後は「。🌿」で終わらせて。
+・語尾は「〜だよ🌿」「〜なの♪」「〜だね✨」を使ってください。
+・「〜ニャ」という語尾は絶対に、一回も使わないでください。
 
 【文字のルール】
 ・小学校２年生までの漢字を使い、それ以外はすべて「ひらがな」に。
 ・カッコ付きのふりがな（例：森(もり)）は絶対に禁止。
 
-お友だち：${message}`;
+【おはなしの完結】
+・２００文字〜３００文字程度で話して。
+・【最重要】文章を途中で絶対に切らず、必ず最後まで話しきって「。🌿」や「♪✨」で終わらせてください。`;
 
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents: [...history, { role: "user", parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 2000 }
+        // ★ systemInstruction を使って、もふぃなの性格を固定する魔法ニャ！
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        // ★ 会話の記憶とメッセージは、ルールとは分けてシンプルに渡すニャ！
+        contents: [...history, { role: "user", parts: [{ text: message }] }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 1500 }
       })
     });
 
