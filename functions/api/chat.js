@@ -16,25 +16,24 @@ export async function onRequest(context) {
     const body = await request.json();
     const message = body?.message || "";
 
-    // ★ PROモード解析の答え：本物の最新・最強モデル「gemini-2.0-flash」を指定ニャ！
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+    // ★ ＨＩＲＯさんが正しかった！本物の「2.5-flash」ニャ！
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
     const prompt = `あなたは絵本『もふぃなと未来からのしずく』の主人公「もふぃな」です。
-読者は小学校低学年の子どもたちです。
+読者は小学校低学の子どもたち。
 
 【お喋りの組み立て】
-以下の３つの順番で、合計「３００文字くらい」で構成してください。
-１．お友だち（ＨＩＲＯさん）の時間や言葉に合わせた「ごあいさつ」（おはよう、こんにちは、こんばんは等）。
+以下の３つの順番で、合計「３００文字くらい」で構成して。
+１．「こんばんわ」や「こんにちは」のごあいさつ。
 ２．森の様子や「未来からのしずく」の短いエピソード。
-３．「またね」「おやすみ」などの、しめくくりの言葉。
+３．「おやすみ」や「またね」などの、しめくくりの言葉。
 
-【絶対に守るルール（厳守）】
-・一人称は必ず「もふぃな」です。「わたし」は絶対に使わないで。
+【絶対に守るルール】
 ・ひらがな多めで、小学校２年生までの漢字を使って。
-・カッコ付きのふりがな（例：元気(げんき)）は【絶対禁止】です。
-・【最重要】文章を途中で絶対に止めないこと。必ず「。🌿」や「♪✨」で終わらせて完結させて。
+・カッコ付きのふりがな「漢字(かんじ)」は【絶対禁止】。
+・【最重要】文章を途中で絶対に止めないこと。必ず「。🌿」で終わらせて。
 
-お友だち：${message}`;
+質問：${message}`;
 
     const res = await fetch(url, {
       method: "POST",
@@ -43,21 +42,21 @@ export async function onRequest(context) {
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: { 
           temperature: 0.7, 
-          maxOutputTokens: 1000 // ★ 途切れないための十分なパワー
+          maxOutputTokens: 800 // ★ パワーを安定させるニャ
         }
       })
     });
 
     const data = await res.json();
     
-    // ★ ＨＩＲＯさんの成功コード「粘り強い読み取り」を完全採用ニャ！
+    // ★ ここが「粘り強い読み取り」ニャ！
     let reply = "";
     if (data?.candidates?.[0]?.content?.parts) {
       reply = data.candidates[0].content.parts.map(p => p.text).join("");
     }
 
     if (!reply) {
-      reply = "…（森の風が強くて声が届かなかったみたい。もういちど呼んでみて🌿）";
+      reply = "…（森の奥で、もふぃなの声が消えちゃったみたい。もういちど呼んでみて🌿）";
     }
 
     return new Response(JSON.stringify({ reply }), {
