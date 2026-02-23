@@ -13,28 +13,33 @@
       <button id="chatBtn" class="chatBtn" type="submit">送信</button>
     </form>
   </section></main>
+
   <script>
     const log = document.getElementById("chatLog");
     const input = document.getElementById("chatInput");
     const form = document.getElementById("chatForm");
+
     function add(role, text) {
       const row = document.createElement("div");
       row.className = "msg " + (role === "user" ? "user" : "bot");
       row.innerHTML = `<div class="bubble">${text}</div>`;
       log.appendChild(row);
-      log.scrollTop = log.scrollHeight;
+      log.scrollTop = log.scrollHeight; // ★ お話が隠れないように自動スクロール
       return row;
     }
+
     form.addEventListener("submit", async () => {
       const msg = input.value.trim(); if(!msg) return; input.value = "";
       add("user", msg);
-      const th = add("bot", "…考え中🍃");
+      const th = add("bot", "…もふぃなが考えているよ🍃");
       try {
         const res = await fetch("/api/chat", { method: "POST", body: JSON.stringify({ message: msg }) });
         const data = await res.json();
         th.querySelector(".bubble").textContent = data.reply;
         log.scrollTop = log.scrollHeight;
-      } catch(e) { th.querySelector(".bubble").textContent = "エラーだニャ🌿"; }
+      } catch(e) { 
+        th.querySelector(".bubble").textContent = "通信が切れちゃったみたいニャ🌿"; 
+      }
     });
   </script>
 </body>

@@ -58,9 +58,11 @@ body {
   font-size: 16px;
   line-height: 1.6;
   white-space: pre-wrap;
-  word-break: break-all;
-  /* ★ 絶対に途切れない、魔法の高さ設定ニャ！ */
-  height: auto !important;
+  
+  /* ★ ここが全体のバランスを整える魔法！ */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  height: auto !important; 
   display: block !important;
 }
 
