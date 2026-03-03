@@ -1,66 +1,359 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>お話の森 | mofinaproject</title>
-  <link rel="stylesheet" href="style.css"><link rel="icon" href="/assets/mofina.ico">
-</head>
-<body>
-  <main class="screen"><section class="panel">
-    <div id="chatLog" class="chatLog"></div>
-    <form id="chatForm" class="chatForm" onsubmit="return false;">
-      <input id="chatInput" class="chatInput" type="text" placeholder="もふぃなに話しかけてね…" autocomplete="off">
-      <button id="chatBtn" class="chatBtn" type="submit">送信</button>
-    </form>
-  </section></main>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="ミントリーフの森の入口。光るものを見つけてね。" />
+  <title>Mofina Project | 森の入口</title>
 
-  <script>
-    const log = document.getElementById("chatLog");
-    const input = document.getElementById("chatInput");
-    const form = document.getElementById("chatForm");
-
-    let chatHistory = [];
-    let lastActiveTime = Date.now(); // ★ 最後に喋った時間を記録するニャ
-
-    function add(role, text) {
-      const row = document.createElement("div");
-      row.className = "msg " + (role === "user" ? "user" : "bot");
-      row.innerHTML = `<div class="bubble">${text}</div>`;
-      log.appendChild(row);
-      log.scrollTop = log.scrollHeight;
-      return row;
+  <style>
+    :root{
+      --glow: 254, 235, 112; /* #FEEB70 */
+      --text: rgba(255,255,255,.92);
+      --shadow: rgba(0,0,0,.45);
+      --panel: rgba(0,0,0,.28);
+      --ring: rgba(var(--glow), .65);
+      --ring2: rgba(var(--glow), .28);
     }
 
-    form.addEventListener("submit", async () => {
-      const msg = input.value.trim(); if(!msg) return; input.value = "";
-      
-      // ★ 魔法：１０分以上（600,000ミリ秒）経っていたら記憶を消すニャ！
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Segoe UI", Arial, sans-serif;
+      background:#07150f;
+      color:var(--text);
+      overflow:hidden;
+    }
+
+    /* ====== 背景（森の地図） ====== */
+    .scene{
+      position:relative;
+      height:100%;
+      width:100%;
+      background:
+        radial-gradient(1200px 700px at 50% 35%, rgba(255,255,255,.10), rgba(0,0,0,0) 55%),
+        linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.55));
+    }
+
+    /* ここを森の地図画像に差し替え */
+    .map{
+      position:absolute;
+      inset:0;
+      background-image: url("assets/forest-map.webp"); /* ←差し替え */
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.03) contrast(1.02);
+      transform: scale(1.02);
+    }
+
+    /* ほんの薄い朝もや */
+    .mist{
+      position:absolute;
+      inset:-10%;
+      background: radial-gradient(900px 500px at 50% 40%, rgba(255,255,255,.14), rgba(255,255,255,0) 60%);
+      mix-blend-mode: screen;
+      pointer-events:none;
+      animation: mist 9s ease-in-out infinite alternate;
+      opacity:.65;
+    }
+    @keyframes mist{
+      from{ transform: translateY(0px); opacity:.55; }
+      to{ transform: translateY(-10px); opacity:.72; }
+    }
+
+    /* ====== UI ====== */
+    .ui{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+    }
+
+    /* 初回ガイド（3秒で消える） */
+    .hint{
+      position:absolute;
+      left: 18px;
+      top: 18px;
+      padding: 10px 12px;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      backdrop-filter: blur(8px);
+      pointer-events:none;
+      max-width: 78vw;
+      line-height: 1.45;
+      font-size: 14px;
+      opacity: 0;
+      transform: translateY(-6px);
+      animation: hintIn 700ms ease-out 220ms forwards, hintOut 900ms ease-in 3.6s forwards;
+    }
+    @keyframes hintIn{
+      to{ opacity:1; transform: translateY(0); }
+    }
+    @keyframes hintOut{
+      to{ opacity:0; transform: translateY(-6px); }
+    }
+
+    /* 言語切替（右上だけ） */
+    .lang{
+      position:absolute;
+      right: 16px;
+      top: 16px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      pointer-events:auto;
+      user-select:none;
+    }
+    .lang button{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.24);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor:pointer;
+      backdrop-filter: blur(8px);
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .lang button:hover{ transform: translateY(-1px); border-color: rgba(var(--glow), .55); }
+    .lang button[aria-pressed="true"]{
+      background: rgba(var(--glow), .10);
+      border-color: rgba(var(--glow), .65);
+      box-shadow: 0 0 0 2px rgba(var(--glow), .12) inset;
+    }
+
+    /* ====== 光るオブジェクト（入口） ====== */
+    .portal{
+      position:absolute;
+      width: 92px;
+      height: 92px;
+      border-radius: 999px;
+      pointer-events:auto;
+      cursor:pointer;
+      text-decoration:none;
+      display:grid;
+      place-items:center;
+      color: var(--text);
+      transform: translate(-50%, -50%);
+      outline: none;
+    }
+
+    .portal::before{
+      content:"";
+      position:absolute;
+      inset:-10px;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 50% 50%,
+          rgba(var(--glow), .55) 0%,
+          rgba(var(--glow), .20) 42%,
+          rgba(var(--glow), 0) 72%);
+      filter: blur(1px);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+
+    .portal::after{
+      content:"";
+      position:absolute;
+      inset:-26px;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 50% 50%,
+          rgba(var(--glow), .18) 0%,
+          rgba(var(--glow), .10) 26%,
+          rgba(var(--glow), 0) 68%);
+      animation: pulse2 3.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse{
+      0%,100%{ transform: scale(0.98); opacity: .85; }
+      50%{ transform: scale(1.04); opacity: 1; }
+    }
+    @keyframes pulse2{
+      0%,100%{ transform: scale(0.98); opacity: .55; }
+      50%{ transform: scale(1.06); opacity: .75; }
+    }
+
+    .portal:hover::before{
+      background:
+        radial-gradient(circle at 50% 50%,
+          rgba(var(--glow), .70) 0%,
+          rgba(var(--glow), .26) 40%,
+          rgba(var(--glow), 0) 70%);
+    }
+
+    .portal:focus-visible{
+      box-shadow: 0 0 0 3px rgba(var(--glow), .35);
+    }
+
+    .icon{
+      position:relative;
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.20);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 10px 28px rgba(0,0,0,.25);
+      backdrop-filter: blur(8px);
+      display:grid;
+      place-items:center;
+      font-size: 26px;
+      transform: translateY(-2px);
+      transition: transform .15s ease;
+    }
+    .portal:hover .icon{ transform: translateY(-4px); }
+
+    .label{
+      position:absolute;
+      top: 100%;
+      margin-top: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.14);
+      font-size: 12px;
+      white-space: nowrap;
+      box-shadow: 0 8px 22px rgba(0,0,0,.25);
+      backdrop-filter: blur(8px);
+      opacity: .98;
+    }
+
+    /* 配置：%で調整（あとで好きに動かせる） */
+    /* しずく（対話）中央やや上 */
+    #p-talk{ left: 50%; top: 32%; width: 104px; height: 104px; }
+    /* 日常（動画）左手前 */
+    #p-daily{ left: 25%; top: 58%; }
+    /* えほん 右手前 */
+    #p-book{ left: 76%; top: 58%; }
+
+    /* 下部の小さなコピー */
+    .footer-note{
+      position:absolute;
+      left: 16px;
+      bottom: 14px;
+      font-size: 12px;
+      opacity: .78;
+      text-shadow: 0 6px 18px var(--shadow);
+      pointer-events:none;
+    }
+
+    /* モバイル調整 */
+    @media (max-width: 520px){
+      .portal{ width: 84px; height: 84px; }
+      #p-talk{ width: 96px; height: 96px; }
+      .label{ font-size: 11px; }
+      .hint{ font-size: 13px; }
+      #p-daily{ left: 22%; top: 62%; }
+      #p-book{ left: 78%; top: 62%; }
+    }
+
+    /* アクセシビリティ：動きが苦手な人 */
+    @media (prefers-reduced-motion: reduce){
+      .mist, .portal::before, .portal::after{ animation:none !important; }
+      .hint{ animation:none !important; opacity:1; transform:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="scene" aria-label="Mintleaf Forest Home">
+    <div class="map" aria-hidden="true"></div>
+    <div class="mist" aria-hidden="true"></div>
+
+    <div class="ui">
+      <div class="hint" id="hint">
+        <span data-ja>光るものを見つけてね。</span>
+        <span data-en style="display:none;">Find something that glows.</span>
+      </div>
+
+      <div class="lang" aria-label="Language switch">
+        <button id="btn-ja" type="button" aria-pressed="true">JP</button>
+        <button id="btn-en" type="button" aria-pressed="false">EN</button>
+      </div>
+
+      <!-- 入口：対話 -->
+      <a class="portal" id="p-talk" href="/leaf/jp/">
+        <div class="icon" aria-hidden="true">✨</div>
+        <div class="label">
+          <span data-ja>もふぃなとお話</span>
+          <span data-en style="display:none;">Talk with Mofina</span>
+        </div>
+      </a>
+
+      <!-- 入口：日常（動画＋短い日記） -->
+      <a class="portal" id="p-daily" href="/daily/" aria-label="もふぃなの日常へ">
+        <div class="icon" aria-hidden="true">🪥</div>
+        <div class="label">
+          <span data-ja>もふぃなの日常</span>
+          <span data-en style="display:none;">Mofina’s Daily</span>
+        </div>
+      </a>
+
+      <!-- 入口：絵本 -->
+      <a class="portal" id="p-book" href="/books/" aria-label="えほんへ">
+        <div class="icon" aria-hidden="true">📖</div>
+        <div class="label">
+          <span data-ja>えほん</span>
+          <span data-en style="display:none;">Picture Books</span>
+        </div>
+      </a>
+
+      <div class="footer-note">
+        <span data-ja>© Mofina Project</span>
+        <span data-en style="display:none;">© Mofina Project</span>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ===== 言語切替（ページ内の data-ja / data-en を出し分け） =====
+    const btnJa = document.getElementById("btn-ja");
+    const btnEn = document.getElementById("btn-en");
+
+    function setLang(lang){
+      const showJa = (lang === "ja");
+      btnJa.setAttribute("aria-pressed", showJa ? "true" : "false");
+      btnEn.setAttribute("aria-pressed", showJa ? "false" : "true");
+
+      document.documentElement.lang = showJa ? "ja" : "en";
+
+      document.querySelectorAll("[data-ja]").forEach(el => el.style.display = showJa ? "" : "none");
+      document.querySelectorAll("[data-en]").forEach(el => el.style.display = showJa ? "none" : "");
+      localStorage.setItem("mofina_lang", lang);
+    }
+
+    btnJa.addEventListener("click", () => setLang("ja"));
+    btnEn.addEventListener("click", () => setLang("en"));
+
+    const saved = localStorage.getItem("mofina_lang");
+    if(saved === "en") setLang("en");
+
+    // ===== ちょいユーモア（クリック遊び：しずく連打） =====
+    const talk = document.getElementById("p-talk");
+    let poke = 0;
+    talk.addEventListener("click", (e) => {
+      // 通常は遷移するので、遊びは「素早く2回タップ」の時だけ
       const now = Date.now();
-      if (now - lastActiveTime > 600000) {
-        chatHistory = [];
-        console.log("もふぃなは１０分お休みしたので、前の話を忘れちゃったニャ🌿");
+      if(!talk._t) talk._t = now;
+      if(now - talk._t < 450){
+        poke++;
+        if(poke === 2){
+          // 一瞬だけ表示（遷移は妨げない）
+          const hint = document.getElementById("hint");
+          hint.style.opacity = "1";
+          hint.style.transform = "translateY(0)";
+          hint.innerHTML = (document.documentElement.lang === "ja")
+            ? "くすぐったい。"
+            : "That tickles.";
+          setTimeout(() => window.location.href = talk.getAttribute("href"), 180);
+          e.preventDefault();
+          poke = 0;
+        }
+      } else {
+        poke = 0;
       }
-      lastActiveTime = now; // 時間を更新するニャ
-
-      add("user", msg);
-      const th = add("bot", "…考え中🍃");
-
-      try {
-        const res = await fetch("/api/chat", { 
-          method: "POST", 
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: msg, history: chatHistory }) 
-        });
-        const data = await res.json();
-        const reply = data.reply;
-
-        th.querySelector(".bubble").textContent = reply;
-        
-        chatHistory.push({ role: "user", parts: [{ text: msg }] });
-        chatHistory.push({ role: "model", parts: [{ text: reply }] });
-
-        log.scrollTop = log.scrollHeight;
-      } catch(e) { th.querySelector(".bubble").textContent = "エラーだニャ🌿"; }
+      talk._t = now;
     });
   </script>
 </body>
