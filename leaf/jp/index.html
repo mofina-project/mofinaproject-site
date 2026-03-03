@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>お話の森 | mofinaproject</title>
-  <link rel="stylesheet" href="style.css"><link rel="icon" href="/assets/mofina.ico">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/assets/mofina.ico">
 </head>
 <body>
-  <main class="screen"><section class="panel">
-    <div id="chatLog" class="chatLog"></div>
-    <form id="chatForm" class="chatForm" onsubmit="return false;">
-      <input id="chatInput" class="chatInput" type="text" placeholder="もふぃなに話しかけてね…" autocomplete="off">
-      <button id="chatBtn" class="chatBtn" type="submit">送信</button>
-    </form>
-  </section></main>
+  <main class="screen">
+    <section class="panel">
+      <div id="chatLog" class="chatLog"></div>
+      <form id="chatForm" class="chatForm" onsubmit="return false;">
+        <input id="chatInput" class="chatInput" type="text" placeholder="もふぃなに話しかけてね…" autocomplete="off">
+        <button id="chatBtn" class="chatBtn" type="submit">送信</button>
+      </form>
+    </section>
+  </main>
 
   <script>
     const log = document.getElementById("chatLog");
@@ -20,7 +24,7 @@
     const form = document.getElementById("chatForm");
 
     let chatHistory = [];
-    let lastActiveTime = Date.now(); // ★ 最後に喋った時間を記録するニャ
+    let lastActiveTime = Date.now();
 
     function add(role, text) {
       const row = document.createElement("div");
@@ -32,25 +36,29 @@
     }
 
     form.addEventListener("submit", async () => {
-      const msg = input.value.trim(); if(!msg) return; input.value = "";
+      const msg = input.value.trim(); 
+      if(!msg) return; 
+      input.value = "";
       
-      // ★ 魔法：１０分以上（600,000ミリ秒）経っていたら記憶を消すニャ！
+      // 10分以上（600,000ミリ秒）経っていたら記憶を消すニャ
       const now = Date.now();
       if (now - lastActiveTime > 600000) {
         chatHistory = [];
-        console.log("もふぃなは１０分お休みしたので、前の話を忘れちゃったニャ🌿");
+        console.log("もふぃなは10分お休みしたので、前の話を忘れちゃったニャ🌿");
       }
-      lastActiveTime = now; // 時間を更新するニャ
+      lastActiveTime = now;
 
       add("user", msg);
       const th = add("bot", "…考え中🍃");
 
       try {
         const res = await fetch("/api/chat", { 
-         method: "POST", 
-         headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({ message: msg, history: chatHistory })
+          method: "POST", 
+          headers: { "Content-Type": "application/json" },
+          // ここが重要ニャ！シンプルにメッセージと履歴だけを送るニャ
+          body: JSON.stringify({ message: msg, history: chatHistory })
         });
+        
         const data = await res.json();
         const reply = data.reply;
 
@@ -60,7 +68,9 @@
         chatHistory.push({ role: "model", parts: [{ text: reply }] });
 
         log.scrollTop = log.scrollHeight;
-      } catch(e) { th.querySelector(".bubble").textContent = "エラーだニャ🌿"; }
+      } catch(e) { 
+        th.querySelector(".bubble").textContent = "エラーだニャ🌿"; 
+      }
     });
   </script>
 </body>

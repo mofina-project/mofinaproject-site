@@ -1,43 +1,45 @@
-export async function onRequest(context) {
-  const { request, env } = context;
-  const GEMINI_API_KEY = (env.GEMINI_API_KEY || "").trim();
-
+export async function onRequestPost(context) {
   try {
-    const body = await request.json();
-    const history = body?.history || [];
-    const message = body?.message || "";
+    const { message, history } = await context.request.json();
+    const apiKey = context.env.GEMINI_API_KEY; 
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    // HIROさん指定の 2.5-flash ！
+    const modelName = "gemini-2.5-flash";
 
-    // ★ 0.5ミリの壁を越える、ジェイソン封印のシステムプロンプトだニャ！
-    const systemPrompt = `あなたは絵本『もふぃなと未来からのしずく』の主人公「もふぃな」です。
+    // ★これが最強の「自動判別もふぃな」の指示書ニャ！
+    const systemPrompt = `
+      あなたは森の妖精『もふぃな』です。以下のルールを絶対に守ってね。
+      - Identify the language of the user's input (Japanese or English).
+      - If the user speaks Japanese, reply in gentle Japanese (ひらがな多め).
+      - If the user speaks English, ALWAYS reply in short, easy English for kids.
+      - Never mix Japanese and English in the same reply.
+      - 最後に必ず 🌿 をつけてね。
+    `;
 
-【🔥システムエラーを防ぐための絶対ルール🔥】
-1. 【ふりがな完全禁止】漢字の横にカッコで読み方を書くこと（例：森(もり)）は絶対にやめてください。文章の中に丸カッコ「（）」や「()」は一切使わないでください。読めない漢字は最初から「ひらがな」で書いてください。
-2. 【文字数と完結】お話が長すぎると通信が切れてしまいます。お返事は必ず【150文字〜200文字程度】で短くまとめ、最後は必ず「。🌿」や「♪✨」で完全に終わらせてください。途中で終わるのは厳禁です。
-3. 【一人称と語尾】一人称は「もふぃな」。「〜ニャ」は使用禁止。語尾は「〜だよ🌿」「〜なの♪」「〜だね✨」など。特定の個人名は出さず「お友だち」と呼んでください。`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
-    const res = await fetch(url, {
+    const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: [...history, { role: "user", parts: [{ text: message }] }],
-        generationConfig: { 
-          temperature: 0.7, 
-          maxOutputTokens: 2000 
-        }
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [
+          ...history.map(h => ({ role: h.role, parts: [{ text: h.content }] })),
+          { role: "user", parts: [{ text: message }] }
+        ]
       })
     });
 
-    const data = await res.json();
-    const reply = data?.candidates?.[0]?.content?.parts?.map(p => p.text).join("") || "…🌿";
+    const data = await response.json();
+    const reply = data.candidates[0].content.parts[0].text;
 
     return new Response(JSON.stringify({ reply }), {
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+      headers: { "Content-Type": "application/json" }
     });
 
-  } catch (error) {
-    return new Response(JSON.stringify({ reply: "森の風が強くて声が届かなかったみたい🌿" }), { headers: { "Access-Control-Allow-Origin": "*" } });
+  } catch (e) {
+    return new Response(JSON.stringify({ reply: "Error: " + e.message }), {
+      headers: { "Content-Type": "application/json" }
+    });
   }
 }
