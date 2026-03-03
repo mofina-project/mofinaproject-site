@@ -46,8 +46,8 @@
       addMsg(msg, "user");
 
       try {
-        // ★重要：送り先を英語専用の「/api/chat-en」にするニャ！
-        const res = await fetch("/api/chat-en", {
+        
+        const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: msg, history: chatHistory })
@@ -59,7 +59,7 @@
         chatHistory.push({ role: "user", content: msg });
         chatHistory.push({ role: "model", content: reply });
       } catch (e) {
-        addMsg("Sorry, I'm a bit sleepy... 🍃", "bot");
+addMsg("Error: " + e.message, "bot");
       }
     }
 
