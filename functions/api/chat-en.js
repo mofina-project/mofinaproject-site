@@ -31,4 +31,4 @@ export async function onRequestPost(context) {
   return new Response(JSON.stringify({ reply }), {
     headers: { "Content-Type": "application/json" }
   });
-} // ← ★この最後（さいご）のカッコが超大事（ちょうだいじ）ニャ！
+}
