@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talk with Mofina | Mofina Project</title>
+  <link rel="stylesheet" href="../jp/style.css"> </head>
+<body>
+  <div class="screen">
+    <div class="panel">
+      <div id="chatLog" class="chatLog">
+        <div class="msg bot"><div class="bubble">Hello! I'm Mofina. 🌿 Shall we talk about the forest? ✨</div></div>
+      </div>
+      <div class="chatForm">
+        <input type="text" id="chatInput" class="chatInput" placeholder="Type a message..." autocomplete="off">
+        <button id="chatBtn" class="chatBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const log = document.getElementById("chatLog");
+    const input = document.getElementById("chatInput");
+    const btn = document.getElementById("chatBtn");
+    let chatHistory = [];
+    let lastTime = Date.now();
+
+    async function send() {
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      // 10 minutes reset magic (English version)
+      const now = Date.now();
+      if (now - lastTime > 10 * 60 * 1000) {
+        chatHistory = [];
+        const info = document.createElement("div");
+        info.style.textAlign = "center";
+        info.style.fontSize = "12px";
+        info.style.margin = "10px";
+        info.innerText = "Mofina took a nap and forgot the previous talk...🌿";
+        log.appendChild(info);
+      }
+      lastTime = now;
+
+      input.value = "";
+      addMsg(msg, "user");
+
+      try {
+        // ★重要：送り先を英語専用の「/api/chat-en」にするニャ！
+        const res = await fetch("/api/chat-en", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg, history: chatHistory })
+        });
+        const data = await res.json();
+        const reply = data.reply;
+
+        addMsg(reply, "bot");
+        chatHistory.push({ role: "user", content: msg });
+        chatHistory.push({ role: "model", content: reply });
+      } catch (e) {
+        addMsg("Sorry, I'm a bit sleepy... 🍃", "bot");
+      }
+    }
+
+    function addMsg(txt, side) {
+      const d = document.createElement("div");
+      d.className = `msg ${side}`;
+      d.innerHTML = `<div class="bubble">${txt}</div>`;
+      log.appendChild(d);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    btn.addEventListener("click", send);
+    input.addEventListener("keypress", (e) => { if (e.key === "Enter") send(); });
+  </script>
+</body>
+</html>
