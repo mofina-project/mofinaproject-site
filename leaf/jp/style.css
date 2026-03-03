@@ -151,3 +151,23 @@ body {
   .bubble{ font-size: 15px; }
   .msg.bot::before{ width: 42px; height: 42px; }
 }
+
+.homeBack{
+  position: fixed;
+  left: 14px;
+  top: 14px;
+  z-index: 9999;
+  padding: 10px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: rgba(255,255,255,.95);
+  background: rgba(0,0,0,.28);
+  border: 1px solid rgba(255,255,255,.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+.homeBack:hover{
+  border-color: rgba(254,235,112,.55);
+  transform: translateY(-1px);
+}
