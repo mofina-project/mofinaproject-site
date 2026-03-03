@@ -4,8 +4,7 @@ export async function onRequestPost(context) {
     const apiKey = context.env.GEMINI_API_KEY; 
 
     const modelName = "gemini-2.5-flash";
-    // 指示をより強く、短くしたニャ！
-    const systemPrompt = "You are 'Mofina'. ALWAYS reply in English. Use easy English for kids. End with 🌿.";
+    const systemPrompt = "You are 'Mofina', a forest fairy. ALWAYS reply in short, easy English for kids. End with 🌿.";
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
@@ -13,10 +12,11 @@ export async function onRequestPost(context) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        // 
+        system_instruction: {
+          parts: [{ text: systemPrompt }]
+        },
         contents: [
-          // 履歴の前に、毎回必ず「英語で喋って」という指示を叩き込むニャ！
-          { role: "user", parts: [{ text: "System Instruction: " + systemPrompt }] },
-          { role: "model", parts: [{ text: "Understood. I will always speak in English from now on. 🌿" }] },
           ...history.map(h => ({ role: h.role, parts: [{ text: h.content }] })),
           { role: "user", parts: [{ text: message }] }
         ]
