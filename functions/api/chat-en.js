@@ -1,8 +1,7 @@
 export async function onRequestPost(context) {
   const { message, history } = await context.request.json();
-  const apiKey = context.env.GEMINI_API_KEY; // Key君は共通でOKニャ！
+  const apiKey = context.env.GEMINI_API_KEY; 
 
-  // ★ここが世界進出版（せかいしんしゅつばん）の魂（たましい）だニャ！
   const systemInstruction = `
     You are 'Mofina', a forest fairy.
     - Reply ALWAYS in English.
@@ -32,4 +31,4 @@ export async function onRequestPost(context) {
   return new Response(JSON.stringify({ reply }), {
     headers: { "Content-Type": "application/json" }
   });
-}
+} // ← ★この最後（さいご）のカッコが超大事（ちょうだいじ）ニャ！
