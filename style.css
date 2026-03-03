@@ -1,35 +1,69 @@
 :root {
   --bg-color: #0f1714;
   --panel-bg: rgba(255, 255, 255, 0.15);
+  --panel-bg-fallback: rgba(0, 0, 0, 0.35);
   --text-color: #ffffff;
   --accent-color: #6dd3a0;
+
+  /* bot icon（ルート /assets に置く） */
   --bot-icon: url("/assets/image_1.png");
+
+  /* 背景（ルート /assets に置く） */
+  --bg-image: url("/assets/bg.jpg");
 }
 
 * { box-sizing: border-box; }
 
+html, body { height: 100%; }
+
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Segoe UI", Arial, sans-serif;
   color: var(--text-color);
-  /* 0.4 を 0.1 に変えるだけで、森に光が差し込むニャ！✨ */
-  background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url("/assets/bg.jpg") center/cover no-repeat fixed;
+  background-color: var(--bg-color);
+
+  /* 森の明るさ：0.1で軽く光が入る（好みで0.05〜0.18） */
+  background:
+    linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)),
+    var(--bg-image) center/cover no-repeat fixed;
+
   min-height: 100vh;
 }
-.screen { display: flex; justify-content: center; padding: 20px; }
+
+/* iOS/スマホで background-attachment: fixed が重い/効かない対策 */
+@media (max-width: 768px){
+  body{
+    background-attachment: scroll;
+  }
+}
+
+.screen {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
 
 .panel {
   width: 100%;
   max-width: 650px;
   background: var(--panel-bg);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 25px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
+/* backdrop-filter 非対応ブラウザのフォールバック */
+@supports not ((backdrop-filter: blur(10px))){
+  .panel{
+    background: var(--panel-bg-fallback);
+  }
+}
+
 .chatLog {
-  height: 500px;
+  /* 固定500pxだと小さい画面で崩れる→画面に追従 */
+  height: min(500px, calc(100vh - 230px));
   overflow-y: auto;
   padding: 15px;
   background: rgba(0, 0, 0, 0.2);
@@ -38,7 +72,21 @@ body {
   scroll-behavior: smooth;
 }
 
-.msg { display: flex; margin-bottom: 20px; align-items: flex-start; }
+/* スクロールバー（任意：気持ちよく） */
+.chatLog::-webkit-scrollbar { width: 10px; }
+.chatLog::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.18);
+  border-radius: 999px;
+}
+.chatLog::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.12);
+}
+
+.msg {
+  display: flex;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
 .msg.user { justify-content: flex-end; }
 .msg.bot { justify-content: flex-start; }
 
@@ -46,9 +94,12 @@ body {
   content: "";
   width: 48px; height: 48px;
   border-radius: 50%;
-  background: var(--bot-icon) center/cover;
+  background: var(--bot-icon) center/cover no-repeat;
   margin-right: 12px;
   flex-shrink: 0;
+
+  /* ほんのり光らせる（雰囲気） */
+  box-shadow: 0 0 18px rgba(255,255,255,0.18);
 }
 
 .bubble {
@@ -58,17 +109,70 @@ body {
   font-size: 16px;
   line-height: 1.6;
   white-space: pre-wrap;
-  
-  /* ★ ここが全体のバランスを整える魔法！ */
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  height: auto !important; 
-  display: block !important;
+
+  /* 長文・URL・英単語崩れ対策（最強） */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+
+  /* !important を使わず自然に */
+  height: auto;
+  display: block;
 }
 
-.msg.user .bubble { background: var(--accent-color); color: #003a22; }
-.msg.bot .bubble { background: rgba(255, 255, 255, 0.2); }
+.msg.user .bubble {
+  background: var(--accent-color);
+  color: #003a22;
+}
 
-.chatForm { display: flex; gap: 10px; }
-.chatInput { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 16px; }
-.chatBtn { padding: 12px 20px; border: none; background: var(--accent-color); border-radius: 10px; font-weight: bold; cursor: pointer; color: #003a22; }
+.msg.bot .bubble {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.chatForm {
+  display: flex;
+  gap: 10px;
+}
+
+.chatInput {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  outline: none;
+
+  background: rgba(255,255,255,0.92);
+  color: #0a1d14;
+}
+
+.chatInput::placeholder{
+  color: rgba(0,0,0,0.45);
+}
+
+.chatBtn {
+  padding: 12px 20px;
+  border: none;
+  background: var(--accent-color);
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #003a22;
+  transition: transform .12s ease, filter .12s ease;
+}
+
+.chatBtn:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+.chatBtn:active{
+  transform: translateY(0px);
+}
+
+/* モバイル微調整 */
+@media (max-width: 520px){
+  .screen{ padding: 14px; }
+  .panel{ padding: 18px; border-radius: 18px; }
+  .bubble{ font-size: 15px; }
+  .msg.bot::before{ width: 42px; height: 42px; }
+}

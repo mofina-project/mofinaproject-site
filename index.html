@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <!-- meta description はJSで切替するので id を付ける -->
   <meta id="meta-desc" name="description" content="ミントリーフの森の入口。光るものを見つけてね。" />
   <title>Mofina Project | Forest Entrance</title>
 
@@ -24,7 +23,6 @@
       overflow:hidden;
     }
 
-    /* ====== 背景（森の地図） ====== */
     .scene{
       position:relative;
       height:100%;
@@ -34,18 +32,18 @@
         linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.55));
     }
 
+    /* 画像URLはJSでセット（assets/asssets どっちでも拾う） */
     .map{
       position:absolute;
       inset:0;
-      background-image: url("assets/forest-map.webp"); /* ←ここに今回の地図画像 */
-      background-size: cover;            /* PCフル画面で埋まる */
-      background-position: center;       /* 中心固定 */
+      background-color:#0b2016;
+      background-size: cover;
+      background-position: center;
       background-repeat: no-repeat;
       filter: saturate(1.03) contrast(1.02);
       transform: scale(1.02);
     }
 
-    /* ほんの薄い朝もや */
     .mist{
       position:absolute;
       inset:-10%;
@@ -60,14 +58,12 @@
       to{ transform: translateY(-10px); opacity:.72; }
     }
 
-    /* ====== UI ====== */
     .ui{
       position:absolute;
       inset:0;
       pointer-events:none;
     }
 
-    /* 初回ガイド（3秒で消える） */
     .hint{
       position:absolute;
       left: 18px;
@@ -89,7 +85,6 @@
     @keyframes hintIn{ to{ opacity:1; transform: translateY(0); } }
     @keyframes hintOut{ to{ opacity:0; transform: translateY(-6px); } }
 
-    /* 言語切替（右上だけ） */
     .lang{
       position:absolute;
       right: 16px;
@@ -118,7 +113,6 @@
       box-shadow: 0 0 0 2px rgba(var(--glow), .12) inset;
     }
 
-    /* ====== 光るオブジェクト（入口） ====== */
     .portal{
       position:absolute;
       width: 92px;
@@ -132,10 +126,9 @@
       color: var(--text);
       transform: translate(-50%, -50%);
       outline: none;
-      z-index: 3; /* 背景に埋もれない */
+      z-index: 3;
     }
 
-    /* 背景が明るくても光るように“発光を強める” */
     .portal::before{
       content:"";
       position:absolute;
@@ -148,9 +141,8 @@
           rgba(var(--glow), 0) 74%);
       filter: blur(1px);
       animation: pulse 2.2s ease-in-out infinite;
-      mix-blend-mode: screen; /* ここが効く：上乗せ発光 */
+      mix-blend-mode: screen;
     }
-
     .portal::after{
       content:"";
       position:absolute;
@@ -172,18 +164,6 @@
     @keyframes pulse2{
       0%,100%{ transform: scale(0.98); opacity: .58; }
       50%{ transform: scale(1.08); opacity: .78; }
-    }
-
-    .portal:hover::before{
-      background:
-        radial-gradient(circle at 50% 50%,
-          rgba(var(--glow), .82) 0%,
-          rgba(var(--glow), .30) 40%,
-          rgba(var(--glow), 0) 72%);
-    }
-
-    .portal:focus-visible{
-      box-shadow: 0 0 0 3px rgba(var(--glow), .35);
     }
 
     .icon{
@@ -220,10 +200,10 @@
       z-index: 4;
     }
 
-    /* 配置：%で調整（地図の位置に合わせてあとで動かす） */
-    #p-talk{ left: 50%; top: 32%; width: 104px; height: 104px; } /* しずく（対話） */
-    #p-daily{ left: 25%; top: 58%; }                            /* 日常 */
-    #p-book{ left: 76%; top: 58%; }                             /* えほん */
+    /* 入口位置 */
+    #p-talk{ left: 50%; top: 32%; width: 104px; height: 104px; }
+    #p-daily{ left: 25%; top: 58%; }
+    #p-book{ left: 76%; top: 58%; }
 
     .footer-note{
       position:absolute;
@@ -253,7 +233,7 @@
 
 <body>
   <main class="scene" aria-label="Mintleaf Forest Home">
-    <div class="map" aria-hidden="true"></div>
+    <div class="map" id="map" aria-hidden="true"></div>
     <div class="mist" aria-hidden="true"></div>
 
     <div class="ui">
@@ -267,8 +247,8 @@
         <button id="btn-en" type="button" aria-pressed="false">EN</button>
       </div>
 
-      <!-- 入口：対話（/leaf/ に変更） -->
-      <a class="portal" id="p-talk" href="/leaf/" aria-label="Talk with Mofina">
+      <!-- 対話：今は確実に生きてる /leaf/jp/ に向ける -->
+      <a class="portal" id="p-talk" href="/leaf/jp/" aria-label="Talk with Mofina">
         <div class="icon" aria-hidden="true">✨</div>
         <div class="label">
           <span data-ja>もふぃなとお話</span>
@@ -276,7 +256,6 @@
         </div>
       </a>
 
-      <!-- 入口：日常（動画＋短い日記） -->
       <a class="portal" id="p-daily" href="/daily/" aria-label="Mofina’s Daily">
         <div class="icon" aria-hidden="true">🪥</div>
         <div class="label">
@@ -285,7 +264,6 @@
         </div>
       </a>
 
-      <!-- 入口：絵本 -->
       <a class="portal" id="p-book" href="/books/" aria-label="Picture Books">
         <div class="icon" aria-hidden="true">📖</div>
         <div class="label">
@@ -302,7 +280,38 @@
   </main>
 
   <script>
-    // ===== 言語切替（data-ja / data-en を出し分け） =====
+    // ===== 画像パスのフォールバック（assets / assssets どっちでも） =====
+    (function(){
+      const map = document.getElementById("map");
+      const candidates = [
+        "assets/forest-map.webp",
+        "asssets/forest-map.webp"
+      ];
+
+      const tryLoad = (src) => new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(src);
+        img.onerror = () => reject(src);
+        img.src = src + "?v=" + Date.now(); // キャッシュ回避
+      });
+
+      (async () => {
+        for (const src of candidates){
+          try{
+            const ok = await tryLoad(src);
+            map.style.backgroundImage = `url("${ok}")`;
+            return;
+          }catch(e){}
+        }
+        // 最後までダメなら、ヒントを出す
+        const hint = document.getElementById("hint");
+        hint.style.opacity = "1";
+        hint.style.transform = "translateY(0)";
+        hint.textContent = "地図画像が見つからないよ（assets/forest-map.webp を確認してね）";
+      })();
+    })();
+
+    // ===== 言語切替 =====
     const btnJa = document.getElementById("btn-ja");
     const btnEn = document.getElementById("btn-en");
     const metaDesc = document.getElementById("meta-desc");
@@ -317,7 +326,6 @@
       document.querySelectorAll("[data-ja]").forEach(el => el.style.display = showJa ? "" : "none");
       document.querySelectorAll("[data-en]").forEach(el => el.style.display = showJa ? "none" : "");
 
-      // meta description も切替（小さいけど気持ちいい）
       metaDesc.setAttribute("content", showJa
         ? "ミントリーフの森の入口。光るものを見つけてね。"
         : "Entrance to Mintleaf Forest. Find something that glows."
@@ -332,7 +340,7 @@
     const saved = localStorage.getItem("mofina_lang");
     if(saved === "en") setLang("en");
 
-    // ===== ちょいユーモア（しずく連打：2回で一言→遷移） =====
+    // ===== ちょいユーモア（しずく連打） =====
     const talk = document.getElementById("p-talk");
     let poke = 0;
 
