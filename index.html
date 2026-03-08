@@ -102,8 +102,7 @@ top:16px;
 display:flex;
 gap:8px;
 align-items:center;
-pointer-events:auto;
-user-select:none;
+pointer-events:auto
 }
 
 .lang button{
@@ -114,16 +113,7 @@ padding:8px 10px;
 border-radius:999px;
 font-size:13px;
 cursor:pointer;
-backdrop-filter:blur(8px);
-transition:transform .12s ease,background .12s ease,border-color .12s ease
-}
-
-.lang button:hover{transform:translateY(-1px);border-color:rgba(var(--glow),.55)}
-
-.lang button[aria-pressed="true"]{
-background:rgba(var(--glow),.10);
-border-color:rgba(var(--glow),.65);
-box-shadow:0 0 0 2px rgba(var(--glow),.12) inset
+backdrop-filter:blur(8px)
 }
 
 .portal{
@@ -138,7 +128,6 @@ display:grid;
 place-items:center;
 color:var(--text);
 transform:translate(-50%,-50%);
-outline:none;
 z-index:3
 }
 
@@ -147,11 +136,7 @@ content:"";
 position:absolute;
 inset:-12px;
 border-radius:inherit;
-background:
-radial-gradient(circle at 50% 50%,
-rgba(var(--glow),.70)0%,
-rgba(var(--glow),.26)42%,
-rgba(var(--glow),0)74%);
+background:radial-gradient(circle at 50% 50%,rgba(var(--glow),.70)0%,rgba(var(--glow),.26)42%,rgba(var(--glow),0)74%);
 filter:blur(1px);
 animation:pulse 2.2s ease-in-out infinite;
 mix-blend-mode:screen
@@ -162,11 +147,7 @@ content:"";
 position:absolute;
 inset:-30px;
 border-radius:inherit;
-background:
-radial-gradient(circle at 50% 50%,
-rgba(var(--glow),.22)0%,
-rgba(var(--glow),.12)26%,
-rgba(var(--glow),0)70%);
+background:radial-gradient(circle at 50% 50%,rgba(var(--glow),.22)0%,rgba(var(--glow),.12)26%,rgba(var(--glow),0)70%);
 animation:pulse2 3.6s ease-in-out infinite;
 mix-blend-mode:screen
 }
@@ -189,16 +170,11 @@ border-radius:16px;
 background:rgba(0,0,0,.20);
 border:1px solid rgba(255,255,255,.14);
 box-shadow:0 10px 28px rgba(0,0,0,.25);
-backdrop-filter:blur(8px);
 display:grid;
 place-items:center;
 font-size:26px;
-transform:translateY(-2px);
-transition:transform .15s ease;
 z-index:4
 }
-
-.portal:hover .icon{transform:translateY(-4px)}
 
 .label{
 position:absolute;
@@ -209,27 +185,34 @@ border-radius:999px;
 background:rgba(0,0,0,.28);
 border:1px solid rgba(255,255,255,.14);
 font-size:12px;
-white-space:nowrap;
-box-shadow:0 8px 22px rgba(0,0,0,.25);
-backdrop-filter:blur(8px);
-opacity:.98;
-z-index:4
+white-space:nowrap
 }
 
-/* portal位置：top +6pxのみ */
+/* portal位置：左 -3px / 上 -3px */
 
-#p-talk{left:47%;top:calc(30% + 6px);width:104px;height:104px}
-#p-daily{left:25%;top:calc(58% + 6px)}
-#p-book{left:76%;top:calc(58% + 6px)}
+#p-talk{
+left:calc(47% - 3px);
+top:calc(30% - 3px);
+width:104px;
+height:104px
+}
+
+#p-daily{
+left:calc(25% - 3px);
+top:calc(58% - 3px)
+}
+
+#p-book{
+left:calc(76% - 3px);
+top:calc(58% - 3px)
+}
 
 .footer-note{
 position:absolute;
 left:16px;
 bottom:14px;
 font-size:12px;
-opacity:.78;
-text-shadow:0 6px 18px var(--shadow);
-pointer-events:none
+opacity:.78
 }
 
 /* loader */
@@ -244,30 +227,16 @@ background:
 radial-gradient(900px 500px at 50% 35%,rgba(255,255,255,.06),rgba(255,255,255,0)60%),
 linear-gradient(180deg,#203222,#0f1b13);
 z-index:9999;
-opacity:1;
-visibility:visible;
-transition:opacity .45s ease,visibility .45s ease
+transition:opacity .45s ease
 }
 
 .loader.is-hidden{
 opacity:0;
-visibility:hidden;
 pointer-events:none
-}
-
-.loader-inner{
-width:min(92vw,460px);
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-text-align:center;
-padding:20px 18px 28px
 }
 
 .loader-character{
 width:150px;
-height:auto;
 display:block;
 margin:0 auto 16px;
 filter:drop-shadow(0 10px 14px rgba(0,0,0,.22))
@@ -277,32 +246,26 @@ filter:drop-shadow(0 10px 14px rgba(0,0,0,.22))
 line-height:1.7;
 font-size:19px;
 font-weight:700;
-color:rgba(255,255,255,.95);
-text-shadow:0 6px 18px rgba(0,0,0,.35);
-letter-spacing:.02em
-}
-
-.loader-text small{
-display:block;
-font-size:16px;
-font-weight:700
+text-align:center
 }
 
 @media (max-width:520px){
-.portal{width:84px;height:84px}
-#p-talk{width:96px;height:96px}
-.label{font-size:11px}
-.hint{font-size:13px}
 
-#p-daily{left:22%;top:calc(62% + 6px)}
-#p-book{left:78%;top:calc(62% + 6px)}
-
-.loader-character{width:128px}
-.loader-text{font-size:17px}
-.loader-text small{font-size:15px}
+#p-daily{
+left:calc(22% - 3px);
+top:calc(62% - 3px)
 }
 
-@media (prefers-reduced-motion:reduce){
+#p-book{
+left:calc(78% - 3px);
+top:calc(62% - 3px)
+}
+
+.loader-character{width:128px}
+
+}
+
+@media (prefers-reduced-motion: reduce){
 .mist,.portal::before,.portal::after{animation:none!important}
 .hint{animation:none!important;opacity:1;transform:none}
 }
@@ -310,8 +273,9 @@ font-weight:700
 </head>
 
 <body>
-<div class="loader" id="loader" aria-live="polite" aria-label="Loading Mintleaf Forest">
-<div class="loader-inner">
+
+<div class="loader" id="loader">
+<div>
 <img class="loader-character" src="/assets/mofina_2.png" alt="もふぃな">
 
 <div class="loader-text" id="loader-text-ja">
@@ -325,42 +289,45 @@ Hehe, everyone~<br>
 I'm Mofina.<br>
 <small>Welcome to Mintleaf Forest 🌿</small>
 </div>
+
 </div>
 </div>
 
-<main class="scene" aria-label="Mintleaf Forest Home">
-<div class="map" id="map" aria-hidden="true"></div>
-<div class="mist" aria-hidden="true"></div>
+<main class="scene">
+
+<div class="map" id="map"></div>
+<div class="mist"></div>
 
 <div class="ui" id="ui">
+
 <div class="hint" id="hint">
 <span data-ja>光るものを見つけてね。</span>
 <span data-en style="display:none;">Find something that glows.</span>
 </div>
 
-<div class="lang" aria-label="Language switch">
-<button id="btn-ja" type="button" aria-pressed="true">JP</button>
-<button id="btn-en" type="button" aria-pressed="false">EN</button>
+<div class="lang">
+<button id="btn-ja" aria-pressed="true">JP</button>
+<button id="btn-en" aria-pressed="false">EN</button>
 </div>
 
-<a class="portal" id="p-talk" href="/leaf/jp/" aria-label="Talk with Mofina">
-<div class="icon" aria-hidden="true">✨</div>
+<a class="portal" id="p-talk" href="/leaf/jp/">
+<div class="icon">✨</div>
 <div class="label">
 <span data-ja>もふぃなとお話</span>
 <span data-en style="display:none;">Talk with Mofina</span>
 </div>
 </a>
 
-<a class="portal" id="p-daily" href="/daily/" aria-label="Mofina’s Daily">
-<div class="icon" aria-hidden="true">🪥</div>
+<a class="portal" id="p-daily" href="/daily/">
+<div class="icon">🪥</div>
 <div class="label">
 <span data-ja>もふぃなの日常</span>
 <span data-en style="display:none;">Mofina’s Daily</span>
 </div>
 </a>
 
-<a class="portal" id="p-book" href="/books/" aria-label="Picture Books">
-<div class="icon" aria-hidden="true">📖</div>
+<a class="portal" id="p-book" href="/books/">
+<div class="icon">📖</div>
 <div class="label">
 <span data-ja>えほん</span>
 <span data-en style="display:none;">Picture Books</span>
@@ -371,12 +338,147 @@ I'm Mofina.<br>
 <span data-ja>© Mofina Project</span>
 <span data-en style="display:none;">© Mofina Project</span>
 </div>
+
 </div>
 </main>
 
 <script>
 
-/* 元コードそのまま */
+const map=document.getElementById("map")
+const ui=document.getElementById("ui")
+const loader=document.getElementById("loader")
+
+const loaderTextJa=document.getElementById("loader-text-ja")
+const loaderTextEn=document.getElementById("loader-text-en")
+
+const btnJa=document.getElementById("btn-ja")
+const btnEn=document.getElementById("btn-en")
+
+function setLang(lang){
+
+const ja=lang==="ja"
+
+document.querySelectorAll("[data-ja]").forEach(el=>el.style.display=ja?"":"none")
+document.querySelectorAll("[data-en]").forEach(el=>el.style.display=ja?"none":"")
+
+loaderTextJa.style.display=ja?"":"none"
+loaderTextEn.style.display=ja?"none":""
+
+localStorage.setItem("mofina_lang",lang)
+
+}
+
+btnJa.onclick=()=>setLang("ja")
+btnEn.onclick=()=>setLang("en")
+
+const saved=localStorage.getItem("mofina_lang")
+if(saved==="en")setLang("en")
+
+const sameOriginReferrer=document.referrer&&(()=>{
+
+try{
+return new URL(document.referrer).origin===location.origin
+}catch(e){return false}
+
+})()
+
+const hasVisited=sessionStorage.getItem("mofina_map1_visited")==="1"
+const returning=hasVisited||sameOriginReferrer
+const minLoaderTime=returning?700:1300
+
+loaderTextJa.innerHTML=returning
+?"次はどこへ行く？"
+:"えへへ、みんな～<br>もふぃなだよ。<br><small>ミントリーフの森へようこそ 🌿</small>"
+
+loaderTextEn.innerHTML=returning
+?"Where shall we go next?"
+:"Hehe, everyone~<br>I'm Mofina.<br><small>Welcome to Mintleaf Forest 🌿</small>"
+
+function preloadImage(src){
+return new Promise((resolve,reject)=>{
+const img=new Image()
+img.onload=()=>resolve(src)
+img.onerror=()=>reject(src)
+img.src=src+"?v="+Date.now()
+})
+}
+
+async function loadMapImage(){
+
+const candidates=[
+"/assets/forest-map.webp",
+"asssets/forest-map.webp"
+]
+
+for(const src of candidates){
+
+try{
+const ok=await preloadImage(src)
+map.style.backgroundImage=`url("${ok}")`
+return
+}catch(e){}
+
+}
+
+}
+
+async function boot(){
+
+const start=performance.now()
+
+await loadMapImage()
+
+const elapsed=performance.now()-start
+const wait=Math.max(0,minLoaderTime-elapsed)
+
+await new Promise(r=>setTimeout(r,wait))
+
+loader.classList.add("is-hidden")
+map.classList.add("is-visible")
+ui.classList.add("is-visible")
+
+sessionStorage.setItem("mofina_map1_visited","1")
+
+}
+
+boot()
+
+const talk=document.getElementById("p-talk")
+let poke=0
+
+talk.addEventListener("click",(e)=>{
+
+const now=Date.now()
+
+if(!talk._t)talk._t=now
+
+if(now-talk._t<450){
+
+poke++
+
+if(poke===2){
+
+const hint=document.getElementById("hint")
+
+hint.style.opacity="1"
+hint.style.transform="translateY(0)"
+
+hint.innerHTML=document.documentElement.lang==="ja"
+?"くすぐったい。"
+:"That tickles."
+
+setTimeout(()=>location.href=talk.href,180)
+
+e.preventDefault()
+poke=0
+
+}
+
+}else poke=0
+
+talk._t=now
+
+})
 
 </script>
 
