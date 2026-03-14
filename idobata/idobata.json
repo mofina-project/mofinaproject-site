@@ -1,32 +1,8 @@
 [
   {
-    "title": "AIは便利。でもそれだけでいい？",
-    "file": "/idobata/talk01.html",
-    "date": "井戸端会議 01",
-    "summary": "すぐに答えが返る時代に、問いを持つ意味を考えるおしゃべりにゃ。"
-  },
-  {
-    "title": "正しい答えと、いい問い",
-    "file": "/idobata/talk02.html",
-    "date": "井戸端会議 02",
-    "summary": "答えの速さより、問いの質が大事になる場面についての会議にゃ。"
-  },
-  {
-    "title": "AIと考えることの距離",
-    "file": "/idobata/talk03.html",
-    "date": "井戸端会議 03",
-    "summary": "便利さの先で、考える時間が静かに減っていないかを見るお話にゃ。"
-  },
-  {
-    "title": "問いを選ぶのはだれ？",
-    "file": "/idobata/talk04.html",
-    "date": "井戸端会議 04",
-    "summary": "AIが答える前に、人が何を聞くかを決めているという話にゃ。"
-  },
-  {
-    "title": "便利さと、思考の余白",
-    "file": "/idobata/talk05.html",
-    "date": "井戸端会議 05",
-    "summary": "便利さを受け取りながら、自分の森を育てる余白をどう残すかの話にゃ。"
+    "title": "いどばた会議",
+    "date": "",
+    "description": "今日はHPの更新方法を整理した。",
+    "url": "/idobata/talk01.html"
   }
 ]
