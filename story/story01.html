@@ -3,15 +3,171 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>タイトルなし</title>
+<meta name="description" content="リスのミント豚まん事件">
+<title>ミントリーフの森の「正義」という名の嵐 | Mofina Project</title>
+<style>
+:root{
+  --bg:#081710;
+  --bg2:#0d2218;
+  --panel:rgba(255,255,255,.04);
+  --line:rgba(255,255,255,.10);
+  --text:rgba(255,255,255,.94);
+  --muted:rgba(255,255,255,.72);
+  --accent:#d7ef92;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:ui-sans-serif,system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Segoe UI",Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 700px at 50% 15%,rgba(255,255,255,.06),rgba(255,255,255,0)55%),
+    linear-gradient(180deg,var(--bg2),var(--bg));
+  line-height:1.9;
+}
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  backdrop-filter:blur(10px);
+  background:rgba(5,16,11,.72);
+  border-bottom:1px solid var(--line);
+}
+.site-header-inner{
+  max-width:980px;
+  margin:0 auto;
+  padding:14px 18px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.site-header a{
+  color:var(--text);
+  text-decoration:none;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.04);
+  padding:8px 12px;
+  border-radius:999px;
+}
+.site-header a:hover{background:rgba(255,255,255,.08)}
+.container{
+  max-width:980px;
+  margin:0 auto;
+  padding:28px 18px 64px;
+}
+.article{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:24px 20px;
+  box-shadow:0 20px 50px rgba(0,0,0,.18);
+}
+.eyebrow{
+  color:var(--accent);
+  font-size:13px;
+  margin-bottom:8px;
+}
+h1{
+  margin:0 0 12px;
+  font-size:clamp(28px,4vw,42px);
+  line-height:1.25;
+}
+.desc{
+  color:var(--muted);
+  margin:0 0 14px;
+}
+.meta{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  color:var(--muted);
+  font-size:14px;
+  padding-bottom:16px;
+  margin-bottom:18px;
+  border-bottom:1px solid var(--line);
+}
+.content img{
+  max-width:100%;
+  height:auto;
+  border-radius:18px;
+  display:block;
+  margin:18px auto;
+}
+.content p,
+.content ul,
+.content ol,
+.content blockquote,
+.content pre,
+.content table{
+  margin:0 0 1em;
+}
+.content h1,.content h2,.content h3,.content h4{
+  line-height:1.4;
+  margin:1.4em 0 .7em;
+}
+.content a{color:#cfe75d}
+.content code{
+  background:rgba(255,255,255,.08);
+  padding:.15em .4em;
+  border-radius:8px;
+}
+.content pre{
+  overflow:auto;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(0,0,0,.24);
+  border:1px solid var(--line);
+}
+.footer-nav{
+  margin-top:22px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.footer-nav a{
+  color:var(--text);
+  text-decoration:none;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.04);
+  padding:10px 14px;
+  border-radius:999px;
+}
+.footer-nav a:hover{background:rgba(255,255,255,.08)}
+.site-footer{
+  max-width:980px;
+  margin:0 auto;
+  padding:0 18px 26px;
+  color:var(--muted);
+  font-size:13px;
+}
+</style>
 </head>
 <body>
-<p>title: ミントリーフの森の「正義」という名の嵐
-date: 2026.03.05
-description: リスのミント豚まん事件
-tags: アライグマ、ミント豚まん、リス、セミ</p>
-<hr />
-<p>🌿test</p>
-<p><img alt="story01_01" src="/images/story/story01_01.png" /></p>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="/">森の入口へ戻る</a>
+    <a href="/story/">Story 一覧へ戻る</a>
+  </div>
+</header>
+
+<main class="container">
+  <article class="article">
+    <div class="eyebrow">Story</div>
+    <h1>ミントリーフの森の「正義」という名の嵐</h1>
+    <p class="desc">リスのミント豚まん事件</p>
+    <div class="meta"><span class="meta-item">date: 2026.03.05</span> <span class="meta-item">tags: アライグマ、ミント豚まん、リス、セミ</span></div>
+    <div class="content">
+      <p>🌿test</p>
+<p><img alt="story01_01" src="/images/story/story01_01.png"></p>
+    </div>
+    <div class="footer-nav">
+      <a href="/story/">Story 一覧へ戻る</a>
+      <a href="/">森の入口へ戻る</a>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">© Mofina Project</footer>
 </body>
 </html>

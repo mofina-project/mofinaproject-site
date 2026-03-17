@@ -1,14 +1,14 @@
 [
   {
-    "title": "タイトルなし",
+    "title": "talk01",
     "date": "",
-    "description": "本文を読む",
+    "description": "# いどばた会議",
     "url": "/idobata/talk01.html"
   },
   {
-    "title": "タイトルなし",
-    "date": "",
-    "description": "本文を読む",
+    "title": "ミントリーフの森の「タイパ」という名の呪い",
+    "date": "2026.03.15",
+    "description": "ミントリーフの森の入り口で、もふぃなは奇妙な「未来からのしずく」を拾い上げました。",
     "url": "/idobata/talk02.html"
   }
 ]
