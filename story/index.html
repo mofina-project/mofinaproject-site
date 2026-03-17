@@ -148,26 +148,40 @@ opacity:.75;
 </div>
 
 <script>
-fetch("/story/story.json")
-.then(res=>res.json())
-.then(data=>{
-const list=document.getElementById("story-list")
+fetch("./story.json")
+.then(res => {
+  if (!res.ok) {
+    throw new Error("HTTP " + res.status);
+  }
+  return res.json();
+})
+.then(data => {
+  const list = document.getElementById("story-list");
 
-data.forEach(post=>{
-const a=document.createElement("a")
-a.className="card"
-a.href=post.url
-a.innerHTML=`
-<div class="meta">${post.date || ""}</div>
-<h2>${post.title}</h2>
-<div class="summary">${post.description || ""}</div>
-`
-list.appendChild(a)
+  if (!Array.isArray(data) || data.length === 0) {
+    list.innerHTML = '<div class="card"><h2>まだお話がないにゃ</h2><div class="summary">story.json は読めたけれど、記事データが空だったにゃ。</div></div>';
+    return;
+  }
+
+  data.forEach(post => {
+    const a = document.createElement("a");
+    a.className = "card";
+    a.href = post.url;
+    a.innerHTML = `
+      <div class="meta">${post.date || ""}</div>
+      <h2>${post.title || ""}</h2>
+      <div class="summary">${post.description || ""}</div>
+    `;
+    list.appendChild(a);
+  });
 })
-})
-.catch(()=>{
-document.getElementById("story-list").innerHTML='<div class="card"><h2>まだお話が見つからないにゃ</h2><div class="summary">story.json を確認してにゃ。</div></div>'
-})
+.catch(err => {
+  document.getElementById("story-list").innerHTML =
+    '<div class="card"><h2>まだお話が見つからないにゃ</h2><div class="summary">story.json の取得に失敗したにゃ。原因: ' +
+    String(err.message || err) +
+    '</div></div>';
+  console.error(err);
+});
 </script>
 </body>
 </html>
