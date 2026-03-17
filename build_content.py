@@ -7,6 +7,51 @@ STORY_DIR = "story"
 IDOBATA_DIR = "idobata"
 
 
+def parse_md(text):
+    """
+    front matter 対応
+    ---
+    title:
+    date:
+    description:
+    tags:
+    ---
+    本文
+    """
+    title = ""
+    date = ""
+    description = ""
+    body = text
+
+    if text.startswith("---"):
+        parts = text.split("\n---\n", 1)
+        if len(parts) == 2:
+            meta, body = parts
+            lines = meta.splitlines()[1:]
+
+            for line in lines:
+                if ":" not in line:
+                    continue
+                key, val = line.split(":", 1)
+                key = key.strip().lower()
+                val = val.strip()
+
+                if key == "title":
+                    title = val
+                elif key == "date":
+                    date = val
+                elif key == "description":
+                    description = val
+
+    # fallback
+    if not title:
+        title = "タイトルなし"
+    if not description:
+        description = "本文を読む"
+
+    return title, date, description, body
+
+
 def build_section(section, outdir):
     items = []
     src = os.path.join(CONTENT_DIR, section)
@@ -27,27 +72,9 @@ def build_section(section, outdir):
         with open(path, "r", encoding="utf-8") as mdfile:
             text = mdfile.read()
 
-        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        title, date, description, body = parse_md(text)
 
-        title = f.replace(".md", "")
-        date = ""
-        description = "本文を読む"
-
-        if lines:
-            if lines[0].startswith("#"):
-                title = lines[0].lstrip("#").strip()
-
-        for line in lines[1:] if len(lines) > 1 else []:
-            if not line.startswith("#"):
-                description = line
-                break
-
-        name_no_ext = f.replace(".md", "")
-        parts = name_no_ext.split("-")
-        if len(parts) >= 3 and all(p.isdigit() for p in parts[:3]):
-            date = f"{parts[0]}-{parts[1]}-{parts[2]}"
-
-        html = markdown.markdown(text)
+        html = markdown.markdown(body)
 
         if section == "story":
             outfile = f"story{index:02}.html"
@@ -62,9 +89,9 @@ def build_section(section, outdir):
             fhtml.write(f"""<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>{title}</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{title}</title>
 </head>
 <body>
 {html}
