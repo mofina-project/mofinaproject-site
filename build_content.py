@@ -1,10 +1,30 @@
 import os
 import json
+import html
 import markdown
 
 CONTENT_DIR = "content"
 STORY_DIR = "story"
 IDOBATA_DIR = "idobata"
+
+
+# =========================
+# tags安全パース
+# =========================
+def parse_tags(val):
+    val = val.strip()
+    if not val:
+        return []
+
+    # tags: [a, b, c]
+    if val.startswith("[") and val.endswith("]"):
+        inner = val[1:-1].strip()
+        if not inner:
+            return []
+        return [x.strip().strip('"').strip("'") for x in inner.split(",") if x.strip()]
+
+    # tags: a, b, c
+    return [x.strip() for x in val.split(",") if x.strip()]
 
 
 # =========================
@@ -14,6 +34,7 @@ def parse_md(text, filename=""):
     title = ""
     date = ""
     description = ""
+    tags = []
     body = text
 
     # front matter（新）
@@ -36,6 +57,8 @@ def parse_md(text, filename=""):
                     date = val
                 elif key == "description":
                     description = val
+                elif key == "tags":
+                    tags = parse_tags(val)
 
     # fallback（旧ロジック維持）
     lines = [line.strip() for line in text.splitlines() if line.strip()]
@@ -55,7 +78,7 @@ def parse_md(text, filename=""):
     if not description:
         description = "本文を読む"
 
-    return title, date, description, body
+    return title, date, description, tags, body
 
 
 # =========================
@@ -69,48 +92,140 @@ def build_section(section, outdir):
         print(f"skip: {src} がありません")
         return
 
+    os.makedirs(outdir, exist_ok=True)
+
     files = sorted(os.listdir(src))
     index = 1
 
-    for f in files:
-        if not f.endswith(".md"):
+    for md_name in files:
+        if not md_name.endswith(".md"):
             continue
 
-        path = os.path.join(src, f)
+        path = os.path.join(src, md_name)
 
         with open(path, "r", encoding="utf-8") as mdfile:
             text = mdfile.read()
 
-        title, date, description, body = parse_md(text, filename=f)
+        title, date, description, tags, body = parse_md(text, filename=md_name)
 
-        # ★ markdown仕様そのまま
-        html = markdown.markdown(body)
+        # markdown仕様そのまま
+        body_html = markdown.markdown(body)
 
-        # =========================
-        # ★ここだけ修正（核心）
-        # =========================
         if section == "story":
             outfile = f"story{index:02}.html"
             json_name = "story.json"
             url = f"/story/{outfile}"
+            list_url = "/story/"
+            section_label = "おはなし一覧"
         else:
             outfile = f"talk{index:02}.html"
             json_name = "idobata.json"
             url = f"/idobata/{outfile}"
+            list_url = "/idobata/"
+            section_label = "いどばた一覧"
 
         outpath = os.path.join(outdir, outfile)
 
-        # ★HTML構造は完全維持
+        # 表示用
+        safe_title = html.escape(title)
+        safe_date = html.escape(date)
+        safe_tags = [html.escape(tag) for tag in tags]
+        safe_desc = html.escape(description)
+
+        meta_parts = []
+        if date:
+            meta_parts.append(f'<span class="article-date">{safe_date}</span>')
+        if tags:
+            tags_html = "".join([f'<span class="article-tag">{tag}</span>' for tag in safe_tags])
+            meta_parts.append(f'<span class="article-tags">{tags_html}</span>')
+
+        meta_html = ""
+        if meta_parts:
+            meta_html = f"""
+<div class="article-meta">
+  {' '.join(meta_parts)}
+</div>
+"""
+
+        nav_html = f"""
+<nav class="article-nav">
+  <a href="javascript:history.back()">← 戻る</a>
+  <a href="{list_url}">{section_label}</a>
+  <a href="/">森の入口</a>
+</nav>
+"""
+
         with open(outpath, "w", encoding="utf-8") as fhtml:
             fhtml.write(f"""<!doctype html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{title}</title>
+<title>{safe_title}</title>
+<meta name="description" content="{safe_desc}">
+<style>
+body {{
+  font-family: sans-serif;
+  line-height: 1.8;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  color: #222;
+}}
+.article-nav {{
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}}
+.article-nav a {{
+  text-decoration: none;
+}}
+.article-title {{
+  margin: 0 0 12px;
+}}
+.article-meta {{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  color: #666;
+  font-size: 0.95rem;
+}}
+.article-tags {{
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}}
+.article-tag {{
+  padding: 2px 8px;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  font-size: 0.9rem;
+}}
+.article-body img {{
+  max-width: 100%;
+  height: auto;
+}}
+.article-footer {{
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid #ddd;
+}}
+</style>
 </head>
 <body>
-{html}
+{nav_html}
+<article>
+  <h1 class="article-title">{safe_title}</h1>
+  {meta_html}
+  <div class="article-body">
+    {body_html}
+  </div>
+</article>
+<div class="article-footer">
+  {nav_html}
+</div>
 </body>
 </html>
 """)
@@ -119,7 +234,8 @@ def build_section(section, outdir):
             "title": title,
             "date": date,
             "description": description,
-            "url": url   # ←ここだけ変更
+            "tags": tags,
+            "url": url
         })
 
         index += 1

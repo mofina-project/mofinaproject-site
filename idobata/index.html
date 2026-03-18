@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="もふぃなの番外編。動画のお話をひろう、小さな森のStoryにゃ。">
-<title>Story | Mofina Project</title>
+<title>Idobata | Mofina Project</title>
 
 <style>
 :root{
@@ -132,11 +132,11 @@ opacity:.75;
 <div class="wrap">
 
 <header class="header">
-<h1>Story</h1>
+<h1>井戸端会議</h1>
 <p>もふぃなの日常や、動画の裏側をひろう小さな森のお話にゃ。</p>
 <div class="nav">
 <a href="/">Forest Entrance</a>
-<a href="/idobata/">井戸端会議</a>
+<a href="/story/">Story</a>
 </div>
 </header>
 
@@ -159,14 +159,14 @@ a.className="card"
 a.href=post.url
 a.innerHTML=`
 <div class="meta">${post.date || ""}</div>
-<h2>${post.title}</h2>
+<h2>${post.title || ""}</h2>
 <div class="summary">${post.description || ""}</div>
 `
 list.appendChild(a)
 })
 })
 .catch(()=>{
-document.getElementById("story-list").innerHTML='<div class="card"><h2>まだお話が見つからないにゃ</h2><div class="summary">story.json を確認してにゃ。</div></div>'
+document.getElementById("story-list").innerHTML='<div class="card"><h2>まだお話が見つからないにゃ</h2><div class="summary">idobata.json を確認してにゃ。</div></div>'
 })
 </script>
 </body>
