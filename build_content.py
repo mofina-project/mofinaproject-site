@@ -28,7 +28,7 @@ def parse_tags(val):
 
 
 # =========================
-# 安全パース（既存互換）
+# 安全パース（既存互換 + 旧形式対応追加）
 # =========================
 def parse_md(text, filename=""):
     title = ""
@@ -60,8 +60,55 @@ def parse_md(text, filename=""):
                 elif key == "tags":
                     tags = parse_tags(val)
 
+    # ===== 追加: 旧形式対応 =====
+    else:
+        lines_all = text.splitlines()
+        meta_lines = []
+        body_lines = []
+        in_meta = True
+
+        for line in lines_all:
+            stripped = line.strip()
+
+            if in_meta:
+                if stripped == "---":
+                    in_meta = False
+                    continue
+
+                if ":" in line:
+                    meta_lines.append(line)
+                    continue
+
+                if stripped == "":
+                    continue
+
+                in_meta = False
+
+            if not in_meta:
+                body_lines.append(line)
+
+        if meta_lines:
+            for line in meta_lines:
+                if ":" not in line:
+                    continue
+                key, val = line.split(":", 1)
+                key = key.strip().lower()
+                val = val.strip()
+
+                if key == "title":
+                    title = val
+                elif key == "date":
+                    date = val
+                elif key == "description":
+                    description = val
+                elif key == "tags":
+                    tags = parse_tags(val)
+
+            body = "\n".join(body_lines).strip()
+    # ===== 追加ここまで =====
+
     # fallback（旧ロジック維持）
-    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    lines = [line.strip() for line in body.splitlines() if line.strip()]
 
     if not title:
         if lines and lines[0].startswith("#"):
@@ -71,9 +118,17 @@ def parse_md(text, filename=""):
 
     if not description:
         for line in lines[1:] if len(lines) > 1 else []:
-            if not line.startswith("#"):
-                description = line
-                break
+            low = line.lower()
+            if line.startswith("#"):
+                continue
+            # ===== 追加: メタ行除外 =====
+            if low.startswith("title:") or low.startswith("date:") or low.startswith("description:") or low.startswith("tags:"):
+                continue
+            if line.strip() == "---":
+                continue
+            # ===== 追加ここまで =====
+            description = line
+            break
 
     if not description:
         description = "本文を読む"

@@ -1,9 +1,11 @@
 [
   {
-    "title": "story01",
-    "date": "",
-    "description": "date: 2026.03.05",
-    "tags": [],
+    "title": "ミントリーフの森の朝",
+    "date": "2026.03.05",
+    "description": "もふぃなのある朝、ドングリジャム事件",
+    "tags": [
+      "おはよう、歯磨き、ドングリジャム"
+    ],
     "url": "/story/story01.html"
   }
 ]
