@@ -1,5 +1,4 @@
 <script>
-
 function escapeHTML(str){
   return String(str)
     .replace(/&/g,"&amp;")
@@ -9,40 +8,44 @@ function escapeHTML(str){
     .replace(/'/g,"&#39;");
 }
 
-fetch("./story.json")
-.then(res => {
-  if (!res.ok) {
-    throw new Error("HTTP " + res.status);
-  }
-  return res.json();
-})
-.then(data => {
-  const list = document.getElementById("story-list");
+const list = document.getElementById("story-list");
 
-  if (!Array.isArray(data) || data.length === 0) {
-    list.innerHTML = '<div class="card"><h2>まだお話がないにゃ</h2><div class="summary">story.json は読めたけれど、記事データが空だったにゃ。</div></div>';
-    return;
-  }
+if (!list) {
+  console.error('story-list が見つからないにゃ');
+} else {
+  fetch("./story.json")
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("HTTP " + res.status);
+    }
+    return res.json();
+  })
+  .then(data => {
+    if (!Array.isArray(data) || data.length === 0) {
+      list.innerHTML = '<div class="card"><h2>まだお話がないにゃ</h2><div class="summary">story.json は読めたけれど、記事データが空だったにゃ。</div></div>';
+      return;
+    }
 
-  data.forEach(post => {
-    const a = document.createElement("a");
-    a.className = "card";
-    a.href = post.url;
+    data.forEach(post => {
+      const a = document.createElement("a");
+      a.className = "card";
+      a.href = post.url;
 
-    a.innerHTML = `
-      <div class="meta">${escapeHTML(post.date || "")}</div>
-      <h2>${escapeHTML(post.title || "")}</h2>
-      <div class="summary">${escapeHTML(post.description || "")}</div>
-    `;
+      a.innerHTML = `
+        <div class="meta">${escapeHTML(post.date || "")}</div>
+        <h2>${escapeHTML(post.title || "")}</h2>
+        <div class="summary">${escapeHTML(post.description || "")}</div>
+      `;
 
-    list.appendChild(a);
+      list.appendChild(a);
+    });
+  })
+  .catch(err => {
+    list.innerHTML =
+      '<div class="card"><h2>まだお話が見つからないにゃ</h2><div class="summary">story.json の取得に失敗したにゃ。原因: ' +
+      escapeHTML(String(err.message || err)) +
+      '</div></div>';
+    console.error(err);
   });
-})
-.catch(err => {
-  document.getElementById("story-list").innerHTML =
-    '<div class="card"><h2>まだお話が見つからないにゃ</h2><div class="summary">story.json の取得に失敗したにゃ。原因: ' +
-    String(err.message || err) +
-    '</div></div>';
-  console.error(err);
-});
+}
 </script>
