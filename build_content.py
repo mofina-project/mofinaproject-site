@@ -163,8 +163,12 @@ def build_section(section, outdir):
 
         title, date, description, tags, body = parse_md(text, filename=md_name)
 
-        # markdown仕様そのまま
-        body_html = markdown.markdown(body)
+        # markdown変換
+        body_html = markdown.markdown(
+            body,
+            extensions=["extra", "sane_lists", "fenced_code", "tables", "nl2br"],
+            output_format="html5",
+        )
 
         if section == "story":
             outfile = f"story{index:02}.html"
