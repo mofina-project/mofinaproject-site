@@ -11,7 +11,7 @@ function escapeHTML(str){
 const list = document.getElementById("story-list");
 
 if (!list) {
-  console.error('story-list が見つからないにゃ');
+  console.error("story-list が見つからないにゃ");
 } else {
   fetch("./story.json")
   .then(res => {
