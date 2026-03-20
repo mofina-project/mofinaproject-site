@@ -1,10 +1,10 @@
 [
   {
-    "title": "いどばた会議",
+    "title": "talk01",
     "date": "",
-    "description": "今日はHPの更新方法を整理した。",
+    "description": "",
     "tags": [],
-    "url": "/idobata/talk01.html"
+    "url": "talk01.html"
   },
   {
     "title": "ミントリーフの森の「タイパ」という名の呪い",
@@ -13,6 +13,6 @@
     "tags": [
       "リス、アライグマ、セミ、ミント豚まん"
     ],
-    "url": "/idobata/talk02.html"
+    "url": "talk02.html"
   }
 ]

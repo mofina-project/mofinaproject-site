@@ -8,21 +8,23 @@ function escapeHTML(str){
     .replace(/'/g,"&#39;");
 }
 
-const list = document.getElementById("idobata-list");
+// IDが HTML側と一致しているか確認してください
+const list = document.getElementById("story-list"); 
 
 if (!list) {
-  console.error("idobata-list が見つからないにゃ");
+  console.error("リスト表示用の要素が見つからないにゃ");
 } else {
+  // ★ここを idobata.json に変更
   fetch("./idobata.json")
   .then(res => {
     if (!res.ok) {
-      throw new Error("HTTP " + res.status);
+      throw new Error("HTTP " + res.status + " (idobata.json が見つからないにゃ)");
     }
     return res.json();
   })
   .then(data => {
     if (!Array.isArray(data) || data.length === 0) {
-      list.innerHTML = '<div class="card"><h2>まだお話がないにゃ</h2><div class="summary">idobata.json は読めたけれど、記事データが空だったにゃ。</div></div>';
+      list.innerHTML = '<div class="card"><h2>まだ投稿がないにゃ</h2><div class="summary">idobata.json は読めたけれど、中身が空だったにゃ。</div></div>';
       return;
     }
 
@@ -42,7 +44,7 @@ if (!list) {
   })
   .catch(err => {
     list.innerHTML =
-      '<div class="card"><h2>まだお話が見つからないにゃ</h2><div class="summary">idobata.json の取得に失敗したにゃ。原因: ' +
+      '<div class="card"><h2>一覧が読み込めないにゃ</h2><div class="summary">データの取得に失敗したにゃ。原因: ' +
       escapeHTML(String(err.message || err)) +
       '</div></div>';
     console.error(err);
