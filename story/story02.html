@@ -1,16 +1,89 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>story02</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>test01</title>
+<meta name="description" content="これはTestです。">
+<style>
+body {
+  font-family: sans-serif;
+  line-height: 1.8;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  color: #222;
+}
+.article-nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.article-nav a {
+  text-decoration: none;
+}
+.article-title {
+  margin: 0 0 12px;
+}
+.article-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  color: #666;
+  font-size: 0.95rem;
+}
+.article-tags {
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.article-tag {
+  padding: 2px 8px;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  font-size: 0.9rem;
+}
+.article-body img {
+  max-width: 100%;
+  height: auto;
+}
+.article-footer {
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid #ddd;
+}
+</style>
 </head>
 <body>
-<p>title:　もふぃなの昼
-date: 　2026.03.16
-description: 　森の昼の出来事
-tags: 　森,日常</p>
-<hr />
-<p>今日は森の風が気持ちよかった。</p>
+
+<nav class="article-nav">
+  <a href="javascript:history.back()">← 戻る</a>
+  <a href="/story/">おはなし一覧</a>
+  <a href="/">森の入口</a>
+</nav>
+
+<article>
+  <h1 class="article-title">test01</h1>
+  
+<div class="article-meta">
+  <span class="article-date">2026/03/20</span> <span class="article-tags"><span class="article-tag">てすと</span></span>
+</div>
+
+  <div class="article-body">
+    <p>てすとだにゃ</p>
+<p><img alt="story02_03" src="/images/story/story02_03.png"></p>
+  </div>
+</article>
+<div class="article-footer">
+  
+<nav class="article-nav">
+  <a href="javascript:history.back()">← 戻る</a>
+  <a href="/story/">おはなし一覧</a>
+  <a href="/">森の入口</a>
+</nav>
+
+</div>
 </body>
 </html>
