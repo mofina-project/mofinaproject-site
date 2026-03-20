@@ -1,3 +1,97 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Idobata | Mofina Project</title>
+<meta name="description" content="もふぃなの井戸端会議">
+<style>
+body{
+  margin:0;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Segoe UI",Arial,sans-serif;
+  background:#f6fbf7;
+  color:#203224;
+}
+.wrap{
+  max-width:920px;
+  margin:0 auto;
+  padding:32px 16px 64px;
+}
+h1{
+  margin:0 0 8px;
+  font-size:32px;
+}
+.lead{
+  margin:0 0 24px;
+  color:#4b6254;
+  line-height:1.7;
+}
+.nav{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin:0 0 24px;
+}
+.nav a{
+  text-decoration:none;
+  color:#2f5d43;
+  background:#e9f4ec;
+  border:1px solid #cfe3d5;
+  padding:8px 12px;
+  border-radius:999px;
+}
+.list{
+  display:grid;
+  gap:16px;
+}
+.card{
+  display:block;
+  text-decoration:none;
+  color:inherit;
+  background:#fff;
+  border:1px solid #dbe9de;
+  border-radius:16px;
+  padding:18px;
+  box-shadow:0 4px 16px rgba(0,0,0,.04);
+}
+.card:hover{
+  transform:translateY(-1px);
+}
+.meta{
+  font-size:13px;
+  color:#6a7f70;
+  margin-bottom:8px;
+}
+.card h2{
+  margin:0 0 10px;
+  font-size:22px;
+}
+.summary{
+  color:#425447;
+  line-height:1.7;
+}
+.footer{
+  margin-top:32px;
+  font-size:12px;
+  color:#6a7f70;
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <nav class="nav">
+    <a href="/">森の入口</a>
+    <a href="/story/">Story</a>
+  </nav>
+
+  <h1>Idobata</h1>
+  <p class="lead">もふぃなの井戸端会議にゃ。</p>
+
+  <div id="idobata-list" class="list"></div>
+
+  <div class="footer">© Mofina Project</div>
+</main>
+
 <script>
 function escapeHTML(str){
   return String(str)
@@ -8,23 +102,21 @@ function escapeHTML(str){
     .replace(/'/g,"&#39;");
 }
 
-// IDが HTML側と一致しているか確認してください
-const list = document.getElementById("story-list"); 
+const list = document.getElementById("idobata-list");
 
 if (!list) {
-  console.error("リスト表示用の要素が見つからないにゃ");
+  console.error("idobata-list が見つからないにゃ");
 } else {
-  // ★ここを idobata.json に変更
   fetch("./idobata.json")
   .then(res => {
     if (!res.ok) {
-      throw new Error("HTTP " + res.status + " (idobata.json が見つからないにゃ)");
+      throw new Error("HTTP " + res.status);
     }
     return res.json();
   })
   .then(data => {
     if (!Array.isArray(data) || data.length === 0) {
-      list.innerHTML = '<div class="card"><h2>まだ投稿がないにゃ</h2><div class="summary">idobata.json は読めたけれど、中身が空だったにゃ。</div></div>';
+      list.innerHTML = '<div class="card"><h2>まだお話がないにゃ</h2><div class="summary">idobata.json は読めたけれど、記事データが空だったにゃ。</div></div>';
       return;
     }
 
@@ -44,10 +136,12 @@ if (!list) {
   })
   .catch(err => {
     list.innerHTML =
-      '<div class="card"><h2>一覧が読み込めないにゃ</h2><div class="summary">データの取得に失敗したにゃ。原因: ' +
+      '<div class="card"><h2>まだお話が見つからないにゃ</h2><div class="summary">idobata.json の取得に失敗したにゃ。原因: ' +
       escapeHTML(String(err.message || err)) +
       '</div></div>';
     console.error(err);
   });
 }
 </script>
+</body>
+</html>
