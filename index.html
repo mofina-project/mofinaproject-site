@@ -270,36 +270,67 @@ top:calc(62% - 3px)
 .hint{animation:none!important;opacity:1;transform:none}
 }
 
-#mofina-map{
-position:absolute;
-inset:0;
-z-index:2;
-pointer-events:none;
+
+
+#mofina-map {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  background: #eef7f2;
+  border-radius: 12px;
 }
 
-.map-area{
-position:absolute;
-padding:10px 14px;
-background:rgba(255,255,255,.88);
-color:#203222;
-border-radius:10px;
-cursor:pointer;
-transition:transform .2s;
-pointer-events:auto;
-box-shadow:0 6px 18px rgba(0,0,0,.18);
-white-space:nowrap;
+.map-area {
+  position: absolute;
+  padding: 10px 14px;
+  background: #ffffffcc;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.map-area:hover{
-transform:scale(1.05);
+.map-area:hover {
+  transform: scale(1.05);
 }
 
-.center{top:38%;left:48%;transform:translate(-50%,-50%)}
-.left{top:52%;left:24%;transform:translate(-50%,-50%)}
-.right{top:52%;left:76%;transform:translate(-50%,-50%)}
-.bottom{top:76%;left:50%;transform:translate(-50%,-50%)}
+.center { top: 40%; left: 45%; }
+.left   { top: 45%; left: 15%; }
+.right  { top: 45%; right: 15%; }
+.bottom { bottom: 10%; left: 45%; }
+
+
+
+
 </style>
 </head>
+
+
+
+
+
+<div id="mofina-map">
+
+  <div class="map-area center" onclick="openArea('tree')">
+    🌳 大きな木
+  </div>
+
+  <div class="map-area left" onclick="openArea('road')">
+    🚶 散歩道
+  </div>
+
+  <div class="map-area right" onclick="openArea('hill')">
+    🌰 ドングリの丘
+  </div>
+
+  <div class="map-area bottom" onclick="openArea('lake')">
+    🌊 湖
+  </div>
+
+</div>
+
+
+
+
 
 <body>
 
@@ -362,13 +393,6 @@ I'm Mofina.<br>
 <span data-en style="display:none;">Idobata</span>
 </div>
 </a>
-
-<div id="mofina-map">
-  <div class="map-area center" onclick="openArea('tree')">🌳 大きな木</div>
-  <div class="map-area left" onclick="openArea('road')">🚶 散歩道</div>
-  <div class="map-area right" onclick="openArea('hill')">🌰 ドングリの丘</div>
-  <div class="map-area bottom" onclick="openArea('lake')">🌊 湖</div>
-</div>
 
 <div class="footer-note">
 <span data-ja>© Mofina Project</span>
@@ -521,20 +545,25 @@ talk.addEventListener("click", (e) => {
   talk._t = now
 })
 
+
 function openArea(area) {
-  if (area === "tree") {
-    alert("ここは大きな木。もふぃながよくいる場所。")
+  if (area === 'tree') {
+    alert('ここは大きな木。もふぃながよくいる場所。');
   }
-  if (area === "road") {
-    alert("散歩道。日常のお話が読めるよ。")
+  if (area === 'road') {
+    alert('散歩道。日常のお話が読めるよ。');
   }
-  if (area === "hill") {
-    alert("ドングリの丘。リスのいたずらに注意。")
+  if (area === 'hill') {
+    alert('ドングリの丘。リスのいたずらに注意。');
   }
-  if (area === "lake") {
-    alert("湖。しずかに考える場所。")
+  if (area === 'lake') {
+    alert('湖。しずかに考える場所。');
   }
 }
+
+
+
+
 </script>
 
 </body>
