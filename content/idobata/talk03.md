@@ -157,3 +157,5 @@ HIROさん、いかがでしょうか。
 
 
 ![talk03_02](/images/idobata/talk03_02.jpg)
+
+![talk03_03](/images/idobata/talk03_03.jpg)
