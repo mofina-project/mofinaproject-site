@@ -269,68 +269,8 @@ top:calc(62% - 3px)
 .mist,.portal::before,.portal::after{animation:none!important}
 .hint{animation:none!important;opacity:1;transform:none}
 }
-
-
-
-#mofina-map {
-  position: relative;
-  width: 100%;
-  height: 500px;
-  background: #eef7f2;
-  border-radius: 12px;
-}
-
-.map-area {
-  position: absolute;
-  padding: 10px 14px;
-  background: #ffffffcc;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.map-area:hover {
-  transform: scale(1.05);
-}
-
-.center { top: 40%; left: 45%; }
-.left   { top: 45%; left: 15%; }
-.right  { top: 45%; right: 15%; }
-.bottom { bottom: 10%; left: 45%; }
-
-
-
-
 </style>
 </head>
-
-
-
-
-
-<div id="mofina-map">
-
-  <div class="map-area center" onclick="openArea('tree')">
-    🌳 大きな木
-  </div>
-
-  <div class="map-area left" onclick="openArea('road')">
-    🚶 散歩道
-  </div>
-
-  <div class="map-area right" onclick="openArea('hill')">
-    🌰 ドングリの丘
-  </div>
-
-  <div class="map-area bottom" onclick="openArea('lake')">
-    🌊 湖
-  </div>
-
-</div>
-
-
-
-
 
 <body>
 
@@ -366,11 +306,11 @@ I'm Mofina.<br>
 </div>
 
 <div class="lang">
-<button id="btn-ja" aria-pressed="true" type="button">JP</button>
-<button id="btn-en" aria-pressed="false" type="button">EN</button>
+<button id="btn-ja" aria-pressed="true">JP</button>
+<button id="btn-en" aria-pressed="false">EN</button>
 </div>
 
-<a class="portal" id="p-talk" href="/leaf/jp/" aria-label="もふぃなとお話">
+<a class="portal" id="p-talk" href="/leaf/jp/">
 <div class="icon">✨</div>
 <div class="label">
 <span data-ja>もふぃなとお話</span>
@@ -378,7 +318,22 @@ I'm Mofina.<br>
 </div>
 </a>
 
-<a class="portal" id="p-daily" href="/story/" aria-label="Story">
+<<<<<<< HEAD
+<a class="portal" id="p-daily" href="/daily/">
+<div class="icon">🪥</div>
+<div class="label">
+<span data-ja>もふぃなの日常</span>
+<span data-en style="display:none;">Mofina’s Daily</span>
+</div>
+</a>
+
+<a class="portal" id="p-book" href="/books/">
+<div class="icon">📖</div>
+<div class="label">
+<span data-ja>えほん</span>
+<span data-en style="display:none;">Picture Books</span>
+=======
+<a class="portal" id="p-daily" href="/story/">
 <div class="icon">📜</div>
 <div class="label">
 <span data-ja>Story</span>
@@ -386,11 +341,12 @@ I'm Mofina.<br>
 </div>
 </a>
 
-<a class="portal" id="p-book" href="/idobata/" aria-label="井戸端会議">
+<a class="portal" id="p-book" href="/idobata/">
 <div class="icon">☕</div>
 <div class="label">
 <span data-ja>井戸端会議</span>
 <span data-en style="display:none;">Idobata</span>
+>>>>>>> bd0a73d (Update top page and add story/idobata pages)
 </div>
 </a>
 
@@ -403,166 +359,142 @@ I'm Mofina.<br>
 </main>
 
 <script>
-const map = document.getElementById("map")
-const ui = document.getElementById("ui")
-const loader = document.getElementById("loader")
 
-const loaderTextJa = document.getElementById("loader-text-ja")
-const loaderTextEn = document.getElementById("loader-text-en")
+const map=document.getElementById("map")
+const ui=document.getElementById("ui")
+const loader=document.getElementById("loader")
 
-const btnJa = document.getElementById("btn-ja")
-const btnEn = document.getElementById("btn-en")
-const hint = document.getElementById("hint")
-const metaDesc = document.getElementById("meta-desc")
+const loaderTextJa=document.getElementById("loader-text-ja")
+const loaderTextEn=document.getElementById("loader-text-en")
+
+const btnJa=document.getElementById("btn-ja")
+const btnEn=document.getElementById("btn-en")
 
 function setLang(lang){
-  const ja = lang === "ja"
 
-  document.documentElement.lang = lang
+const ja=lang==="ja"
 
-  document.querySelectorAll("[data-ja]").forEach(el => el.style.display = ja ? "" : "none")
-  document.querySelectorAll("[data-en]").forEach(el => el.style.display = ja ? "none" : "")
+document.querySelectorAll("[data-ja]").forEach(el=>el.style.display=ja?"":"none")
+document.querySelectorAll("[data-en]").forEach(el=>el.style.display=ja?"none":"")
 
-  loaderTextJa.style.display = ja ? "" : "none"
-  loaderTextEn.style.display = ja ? "none" : ""
+loaderTextJa.style.display=ja?"":"none"
+loaderTextEn.style.display=ja?"none":""
 
-  btnJa.setAttribute("aria-pressed", ja ? "true" : "false")
-  btnEn.setAttribute("aria-pressed", ja ? "false" : "true")
+localStorage.setItem("mofina_lang",lang)
 
-  if(ja){
-    document.title = "Mofina Project | 森の入口"
-    metaDesc.setAttribute("content","ミントリーフの森の入口。光るものを見つけてね。")
-    document.getElementById("p-talk").setAttribute("aria-label","もふぃなとお話")
-    document.getElementById("p-daily").setAttribute("aria-label","Story")
-    document.getElementById("p-book").setAttribute("aria-label","井戸端会議")
-  }else{
-    document.title = "Mofina Project | Forest Entrance"
-    metaDesc.setAttribute("content","At the entrance to Mintleaf Forest. Find something that glows.")
-    document.getElementById("p-talk").setAttribute("aria-label","Talk with Mofina")
-    document.getElementById("p-daily").setAttribute("aria-label","Story")
-    document.getElementById("p-book").setAttribute("aria-label","Idobata")
-  }
-
-  localStorage.setItem("mofina_lang", lang)
 }
 
-btnJa.onclick = () => setLang("ja")
-btnEn.onclick = () => setLang("en")
+btnJa.onclick=()=>setLang("ja")
+btnEn.onclick=()=>setLang("en")
 
-const saved = localStorage.getItem("mofina_lang")
-setLang(saved === "en" ? "en" : "ja")
+const saved=localStorage.getItem("mofina_lang")
+if(saved==="en")setLang("en")
 
-const sameOriginReferrer = document.referrer && (() => {
-  try{
-    return new URL(document.referrer).origin === location.origin
-  }catch(e){
-    return false
-  }
+const sameOriginReferrer=document.referrer&&(()=>{
+
+try{
+return new URL(document.referrer).origin===location.origin
+}catch(e){return false}
+
 })()
 
-const hasVisited = sessionStorage.getItem("mofina_map1_visited") === "1"
-const returning = hasVisited || sameOriginReferrer
-const minLoaderTime = returning ? 700 : 1300
+const hasVisited=sessionStorage.getItem("mofina_map1_visited")==="1"
+const returning=hasVisited||sameOriginReferrer
+const minLoaderTime=returning?700:1300
 
-loaderTextJa.innerHTML = returning
-  ? "次はどこへ行く？"
-  : "えへへ、みんな～<br>もふぃなだよ。<br><small>ミントリーフの森へようこそ 🌿</small>"
+loaderTextJa.innerHTML=returning
+?"次はどこへ行く？"
+:"えへへ、みんな～<br>もふぃなだよ。<br><small>ミントリーフの森へようこそ 🌿</small>"
 
-loaderTextEn.innerHTML = returning
-  ? "Where shall we go next?"
-  : "Hehe, everyone~<br>I'm Mofina.<br><small>Welcome to Mintleaf Forest 🌿</small>"
+loaderTextEn.innerHTML=returning
+?"Where shall we go next?"
+:"Hehe, everyone~<br>I'm Mofina.<br><small>Welcome to Mintleaf Forest 🌿</small>"
 
 function preloadImage(src){
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve(src)
-    img.onerror = () => reject(src)
-    img.src = src + "?v=" + Date.now()
-  })
+return new Promise((resolve,reject)=>{
+const img=new Image()
+img.onload=()=>resolve(src)
+img.onerror=()=>reject(src)
+img.src=src+"?v="+Date.now()
+})
 }
 
 async function loadMapImage(){
-  const candidates = [
-    "/assets/forest-map.webp",
-    "/assets/forest-map.jpg",
-    "/assets/forest-map.png"
-  ]
 
-  for(const src of candidates){
-    try{
-      const ok = await preloadImage(src)
-      map.style.backgroundImage = `url("${ok}")`
-      return true
-    }catch(e){}
-  }
+const candidates=[
+"/assets/forest-map.webp",
+"asssets/forest-map.webp"
+]
 
-  return false
+for(const src of candidates){
+
+try{
+const ok=await preloadImage(src)
+map.style.backgroundImage=`url("${ok}")`
+return
+}catch(e){}
+
+}
+
 }
 
 async function boot(){
-  const start = performance.now()
 
-  await loadMapImage()
+const start=performance.now()
 
-  const elapsed = performance.now() - start
-  const wait = Math.max(0, minLoaderTime - elapsed)
+await loadMapImage()
 
-  await new Promise(r => setTimeout(r, wait))
+const elapsed=performance.now()-start
+const wait=Math.max(0,minLoaderTime-elapsed)
 
-  loader.classList.add("is-hidden")
-  map.classList.add("is-visible")
-  ui.classList.add("is-visible")
+await new Promise(r=>setTimeout(r,wait))
 
-  sessionStorage.setItem("mofina_map1_visited", "1")
+loader.classList.add("is-hidden")
+map.classList.add("is-visible")
+ui.classList.add("is-visible")
+
+sessionStorage.setItem("mofina_map1_visited","1")
+
 }
 
 boot()
 
-const talk = document.getElementById("p-talk")
-let poke = 0
+const talk=document.getElementById("p-talk")
+let poke=0
 
-talk.addEventListener("click", (e) => {
-  const now = Date.now()
+talk.addEventListener("click",(e)=>{
 
-  if(!talk._t) talk._t = now
+const now=Date.now()
 
-  if(now - talk._t < 450){
-    poke++
+if(!talk._t)talk._t=now
 
-    if(poke === 2){
-      hint.style.opacity = "1"
-      hint.style.transform = "translateY(0)"
-      hint.textContent = document.documentElement.lang === "ja" ? "くすぐったい。" : "That tickles."
+if(now-talk._t<450){
 
-      setTimeout(() => location.href = talk.href, 180)
-      e.preventDefault()
-      poke = 0
-    }
-  }else{
-    poke = 0
-  }
+poke++
 
-  talk._t = now
-})
+if(poke===2){
 
+const hint=document.getElementById("hint")
 
-function openArea(area) {
-  if (area === 'tree') {
-    alert('ここは大きな木。もふぃながよくいる場所。');
-  }
-  if (area === 'road') {
-    alert('散歩道。日常のお話が読めるよ。');
-  }
-  if (area === 'hill') {
-    alert('ドングリの丘。リスのいたずらに注意。');
-  }
-  if (area === 'lake') {
-    alert('湖。しずかに考える場所。');
-  }
+hint.style.opacity="1"
+hint.style.transform="translateY(0)"
+
+hint.innerHTML=document.documentElement.lang==="ja"
+?"くすぐったい。"
+:"That tickles."
+
+setTimeout(()=>location.href=talk.href,180)
+
+e.preventDefault()
+poke=0
+
 }
 
+}else poke=0
 
+talk._t=now
 
+})
 
 </script>
 
