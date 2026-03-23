@@ -12,7 +12,7 @@
   --shadow:rgba(0,0,0,.38);
   --panel:rgba(20,28,20,.42);
   --panelBorder:rgba(255,255,255,.14);
-  --accent:#feeB70;
+  --accent:#feeb70;
 }
 
 *{box-sizing:border-box}
@@ -133,6 +133,12 @@ body{
   transform:translateY(-1px);
 }
 
+.btn:disabled{
+  opacity:.6;
+  cursor:default;
+  transform:none;
+}
+
 .marker{
   position:absolute;
   width:72px;
@@ -140,7 +146,7 @@ body{
   transform:translate(-50%,-50%);
   z-index:25;
   pointer-events:none;
-  transition:left .45s ease, top .45s ease, transform .2s ease;
+  transition:left .45s ease, top .45s ease;
 }
 
 .marker img{
@@ -157,7 +163,7 @@ body{
   border-radius:999px;
   display:grid;
   place-items:center;
-  background:radial-gradient(circle at 35% 35%, #fff6c9 0%, #feeB70 36%, #d0a92f 100%);
+  background:radial-gradient(circle at 35% 35%, #fff6c9 0%, #feeb70 36%, #d0a92f 100%);
   color:#203222;
   font-weight:700;
   font-size:18px;
@@ -278,7 +284,6 @@ body{
       onerror="this.style.display='none';"
     >
 
-    <!-- ちびもふぃな -->
     <div class="marker" id="mofinaMarker" aria-hidden="true">
       <div class="badge" id="markerLabel">もふぃな発見？</div>
       <img
@@ -340,9 +345,16 @@ const spots = [
   { x:36, y:60, label:"左下の道ばた" }
 ];
 
-function pickRandomSpot() {
-  const index = Math.floor(Math.random() * spots.length);
-  return spots[index];
+function pickRandomSpot(excludeLabel = "") {
+  if (spots.length <= 1) return spots[0];
+
+  let spot;
+  do {
+    const index = Math.floor(Math.random() * spots.length);
+    spot = spots[index];
+  } while (spot.label === excludeLabel);
+
+  return spot;
 }
 
 function applySpot(spot) {
@@ -352,10 +364,10 @@ function applySpot(spot) {
   marker.dataset.place = spot.label;
 }
 
-function placeMofina() {
-  const spot = pickRandomSpot();
+function placeMofina(forceChange = false) {
+  const currentLabel = forceChange ? (marker.dataset.place || "") : "";
+  const spot = pickRandomSpot(currentLabel);
   applySpot(spot);
-  sessionStorage.setItem("mofina_map_place", JSON.stringify(spot));
 }
 
 function showToast(text) {
@@ -377,8 +389,6 @@ function goToLeafPage() {
     btn.style.pointerEvents = "none";
   });
 
-  sessionStorage.setItem("mofina_map_found", "1");
-
   setTimeout(() => {
     window.location.href = HIT_REDIRECT_URL;
   }, 900);
@@ -386,7 +396,7 @@ function goToLeafPage() {
 
 rerollBtn.addEventListener("click", () => {
   if (isRedirecting) return;
-  placeMofina();
+  placeMofina(true);
   showToast("ちびもふぃなの場所を変えたにゃ。");
 });
 
@@ -409,17 +419,13 @@ hotspots.forEach(btn => {
   });
 });
 
-const saved = sessionStorage.getItem("mofina_map_place");
-if (saved) {
-  try {
-    const spot = JSON.parse(saved);
-    applySpot(spot);
-  } catch (e) {
-    placeMofina();
+placeMofina(true);
+
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) {
+    placeMofina(true);
   }
-} else {
-  placeMofina();
-}
+});
 </script>
 
 </body>
