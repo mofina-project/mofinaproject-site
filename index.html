@@ -207,6 +207,11 @@ left:calc(76% - 3px);
 top:calc(58% - 3px)
 }
 
+#p-map{
+left:calc(62% - 3px);
+top:calc(74% - 3px)
+}
+
 .footer-note{
 position:absolute;
 left:16px;
@@ -259,6 +264,11 @@ top:calc(62% - 3px)
 #p-book{
 left:calc(78% - 3px);
 top:calc(62% - 3px)
+}
+
+#p-map{
+left:calc(60% - 3px);
+top:calc(76% - 3px)
 }
 
 .loader-character{width:128px}
@@ -334,6 +344,14 @@ I'm Mofina.<br>
 </div>
 </a>
 
+<a class="portal" id="p-map" href="/map/" aria-label="もふぃなはどこだ">
+<div class="icon">🗺️</div>
+<div class="label">
+<span data-ja>もふぃなはどこだ</span>
+<span data-en style="display:none;">Where is Mofina?</span>
+</div>
+</a>
+
 <div class="footer-note">
 <span data-ja>© Mofina Project</span>
 <span data-en style="display:none;">© Mofina Project</span>
@@ -375,12 +393,14 @@ function setLang(lang){
     document.getElementById("p-talk").setAttribute("aria-label","もふぃなとお話")
     document.getElementById("p-daily").setAttribute("aria-label","Story")
     document.getElementById("p-book").setAttribute("aria-label","井戸端会議")
+    document.getElementById("p-map").setAttribute("aria-label","もふぃなはどこだ")
   }else{
     document.title = "Mofina Project | Forest Entrance"
     metaDesc.setAttribute("content","At the entrance to Mintleaf Forest. Find something that glows.")
     document.getElementById("p-talk").setAttribute("aria-label","Talk with Mofina")
     document.getElementById("p-daily").setAttribute("aria-label","Story")
     document.getElementById("p-book").setAttribute("aria-label","Idobata")
+    document.getElementById("p-map").setAttribute("aria-label","Where is Mofina?")
   }
 
   localStorage.setItem("mofina_lang", lang)

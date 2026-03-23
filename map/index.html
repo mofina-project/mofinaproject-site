@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="もふぃなはどこだ。ミントリーフの森の地図ページ。">
+<title>Mofina Project | もふぃなはどこだ</title>
+
+<style>
+:root{
+  --text:#f6f4ea;
+  --shadow:rgba(0,0,0,.38);
+  --panel:rgba(20,28,20,.42);
+  --panelBorder:rgba(255,255,255,.14);
+  --accent:#feeB70;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+
+body{
+  font-family:ui-sans-serif,system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Segoe UI",Arial,sans-serif;
+  background:#0b1b12;
+  color:var(--text);
+  overflow:hidden;
+}
+
+.page{
+  position:relative;
+  width:100%;
+  height:100%;
+  min-height:100dvh;
+  background:
+    radial-gradient(1200px 700px at 50% 18%, rgba(255,255,255,.08), rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.45));
+}
+
+.map-wrap{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+}
+
+.map-image{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+  user-select:none;
+  -webkit-user-drag:none;
+  pointer-events:none;
+  filter:saturate(1.02) contrast(1.01);
+}
+
+.map-fallback{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(900px 500px at 50% 18%, rgba(255,255,255,.10), rgba(255,255,255,0) 56%),
+    linear-gradient(180deg, #7fb07b 0%, #4d7e4f 38%, #2f5b38 100%);
+}
+
+.topbar{
+  position:absolute;
+  top:16px;
+  left:16px;
+  right:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  z-index:20;
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--panelBorder);
+  border-radius:16px;
+  backdrop-filter:blur(8px);
+  box-shadow:0 10px 28px rgba(0,0,0,.24);
+}
+
+.title-box{
+  padding:12px 14px;
+  max-width:min(78vw, 520px);
+}
+
+.title{
+  margin:0 0 4px;
+  font-size:20px;
+  line-height:1.2;
+}
+
+.sub{
+  margin:0;
+  font-size:13px;
+  opacity:.88;
+  line-height:1.45;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  appearance:none;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.28);
+  color:var(--text);
+  border-radius:999px;
+  padding:10px 14px;
+  font-size:14px;
+  cursor:pointer;
+  text-decoration:none;
+  backdrop-filter:blur(8px);
+  box-shadow:0 8px 18px rgba(0,0,0,.18);
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+}
+
+.marker{
+  position:absolute;
+  width:62px;
+  height:62px;
+  transform:translate(-50%,-50%);
+  z-index:15;
+  pointer-events:none;
+  transition:left .45s ease, top .45s ease, transform .2s ease;
+}
+
+.marker img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  filter:drop-shadow(0 8px 10px rgba(0,0,0,.28));
+}
+
+.marker-fallback{
+  width:62px;
+  height:62px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:radial-gradient(circle at 35% 35%, #fff6c9 0%, #feeB70 36%, #d0a92f 100%);
+  color:#203222;
+  font-weight:700;
+  font-size:18px;
+  box-shadow:
+    0 0 0 5px rgba(254,235,112,.18),
+    0 8px 18px rgba(0,0,0,.24);
+}
+
+.marker::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:100%;
+  width:12px;
+  height:12px;
+  background:var(--accent);
+  border-radius:999px;
+  transform:translate(-50%,-30%);
+  box-shadow:0 0 0 5px rgba(254,235,112,.18);
+}
+
+.badge{
+  position:absolute;
+  left:50%;
+  bottom:calc(100% + 10px);
+  transform:translateX(-50%);
+  white-space:nowrap;
+  background:rgba(17,25,18,.78);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:12px;
+  line-height:1;
+  box-shadow:0 8px 18px rgba(0,0,0,.22);
+}
+
+.legend{
+  position:absolute;
+  left:16px;
+  bottom:16px;
+  z-index:20;
+  padding:12px 14px;
+  max-width:min(86vw, 460px);
+}
+
+.legend p{
+  margin:0;
+  font-size:13px;
+  line-height:1.5;
+  opacity:.92;
+}
+
+.hotspot{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  width:12%;
+  height:14%;
+  min-width:68px;
+  min-height:54px;
+  z-index:10;
+  background:transparent;
+  border:none;
+  cursor:pointer;
+}
+
+.hotspot:focus-visible{
+  outline:2px solid rgba(255,255,255,.7);
+  outline-offset:4px;
+  border-radius:16px;
+}
+
+.toast{
+  position:absolute;
+  left:50%;
+  bottom:92px;
+  transform:translateX(-50%);
+  z-index:25;
+  background:rgba(17,25,18,.84);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:999px;
+  padding:10px 14px;
+  font-size:13px;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease;
+  box-shadow:0 10px 24px rgba(0,0,0,.22);
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(-4px);
+}
+
+@media (max-width:720px){
+  .title{font-size:18px}
+  .sub{font-size:12px}
+  .btn{font-size:13px;padding:9px 12px}
+  .marker,.marker-fallback{width:54px;height:54px}
+  .badge{font-size:11px}
+  .legend{bottom:14px;left:14px;right:14px;max-width:none}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="map-wrap">
+    <div class="map-fallback"></div>
+    <img
+      class="map-image"
+      src="/assets/map-main.png"
+      alt="もふぃなの森の地図"
+      onerror="this.style.display='none';"
+    >
+
+    <!-- ちびもふぃな -->
+    <div class="marker" id="mofinaMarker" aria-hidden="true">
+      <div class="badge" id="markerLabel">もふぃな発見？</div>
+      <img
+        id="markerImg"
+        src="/assets/mofina_chibi.png"
+        alt=""
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
+      >
+      <div class="marker-fallback" style="display:none;">も</div>
+    </div>
+
+    <!-- クリック範囲 -->
+    <button class="hotspot" style="left:18%; top:79%;" data-name="大きな木" data-message="大きな木の近く。根っこのあたりがあやしいにゃ。"></button>
+    <button class="hotspot" style="left:74%; top:22%;" data-name="ドングリの丘" data-message="ドングリの丘。ころころ転がる音がしたかも。"></button>
+    <button class="hotspot" style="left:44%; top:27%;" data-name="湖" data-message="湖の奥。滝の音にまぎれて隠れているかも。"></button>
+    <button class="hotspot" style="left:77%; top:74%;" data-name="林" data-message="林の奥。葉っぱのすき間を見てみるにゃ。"></button>
+  </div>
+
+  <div class="topbar">
+    <div class="panel title-box">
+      <h1 class="title">もふぃなはどこだ</h1>
+      <p class="sub">地図のどこかに、ちびもふぃながランダムでいるにゃ。</p>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="rerollBtn" type="button">もういちど探す</button>
+      <a class="btn" href="/">森の入口へ戻る</a>
+    </div>
+  </div>
+
+  <div class="panel legend">
+    <p id="legendText">地図を見て、もふぃながいそうな場所を探すにゃ。</p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const marker = document.getElementById("mofinaMarker");
+const markerLabel = document.getElementById("markerLabel");
+const rerollBtn = document.getElementById("rerollBtn");
+const toast = document.getElementById("toast");
+const legendText = document.getElementById("legendText");
+const hotspots = Array.from(document.querySelectorAll(".hotspot"));
+
+const spots = [
+  { x:18, y:79, label:"大きな木の近く" },
+  { x:74, y:22, label:"ドングリの丘" },
+  { x:44, y:27, label:"湖の奥" },
+  { x:77, y:74, label:"林の中" },
+  { x:53, y:53, label:"分かれ道のあたり" },
+  { x:60, y:43, label:"右道の途中" },
+  { x:36, y:60, label:"左下の道ばた" }
+];
+
+function pickRandomSpot() {
+  const index = Math.floor(Math.random() * spots.length);
+  return spots[index];
+}
+
+function placeMofina() {
+  const spot = pickRandomSpot();
+  marker.style.left = spot.x + "%";
+  marker.style.top = spot.y + "%";
+  markerLabel.textContent = spot.label;
+  marker.dataset.place = spot.label;
+  sessionStorage.setItem("mofina_map_place", JSON.stringify(spot));
+}
+
+function showToast(text) {
+  toast.textContent = text;
+  toast.classList.add("show");
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 1800);
+}
+
+rerollBtn.addEventListener("click", () => {
+  placeMofina();
+  showToast("ちびもふぃなの場所を変えたにゃ。");
+});
+
+hotspots.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const area = btn.dataset.name;
+    const msg = btn.dataset.message;
+    const current = marker.dataset.place || "";
+
+    if (
+      (area === "大きな木" && current.includes("大きな木")) ||
+      (area === "ドングリの丘" && current.includes("ドングリ")) ||
+      (area === "湖" && current.includes("湖")) ||
+      (area === "林" && current.includes("林"))
+    ) {
+      legendText.textContent = "あたりにゃ。ちびもふぃなを見つけたにゃ。";
+      showToast("正解にゃ。ここにもふぃながいたにゃ。");
+    } else {
+      legendText.textContent = msg;
+      showToast("まだ違うにゃ。別の場所も見てみるにゃ。");
+    }
+  });
+});
+
+const saved = sessionStorage.getItem("mofina_map_place");
+if (saved) {
+  try {
+    const spot = JSON.parse(saved);
+    marker.style.left = spot.x + "%";
+    marker.style.top = spot.y + "%";
+    markerLabel.textContent = spot.label;
+    marker.dataset.place = spot.label;
+  } catch (e) {
+    placeMofina();
+  }
+} else {
+  placeMofina();
+}
+</script>
+
+</body>
+</html>
