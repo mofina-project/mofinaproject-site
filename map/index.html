@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="もふぃなはどこだ。ミントリーフの森の地図ページ。">
-<title>Mofina Project | もふぃなはどこだ</title>
+<meta name="description" content="もふぃなを探せ。ミントリーフの森の地図ページ。">
+<title>Mofina Project | もふぃなを探せ</title>
 
 <style>
 :root{
@@ -53,11 +53,13 @@ body{
   -webkit-user-drag:none;
   pointer-events:none;
   filter:saturate(1.02) contrast(1.01);
+  z-index:1;
 }
 
 .map-fallback{
   position:absolute;
   inset:0;
+  z-index:0;
   background:
     radial-gradient(900px 500px at 50% 18%, rgba(255,255,255,.10), rgba(255,255,255,0) 56%),
     linear-gradient(180deg, #7fb07b 0%, #4d7e4f 38%, #2f5b38 100%);
@@ -72,7 +74,7 @@ body{
   justify-content:space-between;
   align-items:flex-start;
   gap:12px;
-  z-index:20;
+  z-index:30;
 }
 
 .panel{
@@ -85,19 +87,20 @@ body{
 
 .title-box{
   padding:12px 14px;
-  max-width:min(78vw, 520px);
+  max-width:min(78vw, 560px);
 }
 
 .title{
   margin:0 0 4px;
-  font-size:20px;
+  font-size:24px;
   line-height:1.2;
+  font-weight:700;
 }
 
 .sub{
   margin:0;
   font-size:13px;
-  opacity:.88;
+  opacity:.92;
   line-height:1.45;
 }
 
@@ -105,6 +108,7 @@ body{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
+  justify-content:flex-end;
 }
 
 .btn{
@@ -119,6 +123,10 @@ body{
   text-decoration:none;
   backdrop-filter:blur(8px);
   box-shadow:0 8px 18px rgba(0,0,0,.18);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
 }
 
 .btn:hover{
@@ -127,10 +135,10 @@ body{
 
 .marker{
   position:absolute;
-  width:62px;
-  height:62px;
+  width:72px;
+  height:72px;
   transform:translate(-50%,-50%);
-  z-index:15;
+  z-index:25;
   pointer-events:none;
   transition:left .45s ease, top .45s ease, transform .2s ease;
 }
@@ -144,8 +152,8 @@ body{
 }
 
 .marker-fallback{
-  width:62px;
-  height:62px;
+  width:72px;
+  height:72px;
   border-radius:999px;
   display:grid;
   place-items:center;
@@ -190,9 +198,9 @@ body{
   position:absolute;
   left:16px;
   bottom:16px;
-  z-index:20;
+  z-index:30;
   padding:12px 14px;
-  max-width:min(86vw, 460px);
+  max-width:min(86vw, 560px);
 }
 
 .legend p{
@@ -209,7 +217,7 @@ body{
   height:14%;
   min-width:68px;
   min-height:54px;
-  z-index:10;
+  z-index:15;
   background:transparent;
   border:none;
   cursor:pointer;
@@ -226,7 +234,7 @@ body{
   left:50%;
   bottom:92px;
   transform:translateX(-50%);
-  z-index:25;
+  z-index:35;
   background:rgba(17,25,18,.84);
   border:1px solid rgba(255,255,255,.14);
   border-radius:999px;
@@ -244,10 +252,15 @@ body{
 }
 
 @media (max-width:720px){
-  .title{font-size:18px}
+  .topbar{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .title{font-size:20px}
   .sub{font-size:12px}
   .btn{font-size:13px;padding:9px 12px}
-  .marker,.marker-fallback{width:54px;height:54px}
+  .marker,.marker-fallback{width:60px;height:60px}
   .badge{font-size:11px}
   .legend{bottom:14px;left:14px;right:14px;max-width:none}
 }
@@ -271,28 +284,31 @@ body{
       <img
         id="markerImg"
         src="/assets/mofina_chibi.png"
-        alt=""
+        alt="ちびもふぃな"
         onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
       >
       <div class="marker-fallback" style="display:none;">も</div>
     </div>
 
-    <!-- クリック範囲 -->
-    <button class="hotspot" style="left:18%; top:79%;" data-name="大きな木" data-message="大きな木の近く。根っこのあたりがあやしいにゃ。"></button>
+    <!-- クリック範囲 7か所 -->
+    <button class="hotspot" style="left:18%; top:79%;" data-name="大きな木の近く" data-message="大きな木の近く。根っこのあたりがあやしいにゃ。"></button>
     <button class="hotspot" style="left:74%; top:22%;" data-name="ドングリの丘" data-message="ドングリの丘。ころころ転がる音がしたかも。"></button>
-    <button class="hotspot" style="left:44%; top:27%;" data-name="湖" data-message="湖の奥。滝の音にまぎれて隠れているかも。"></button>
-    <button class="hotspot" style="left:77%; top:74%;" data-name="林" data-message="林の奥。葉っぱのすき間を見てみるにゃ。"></button>
+    <button class="hotspot" style="left:44%; top:27%;" data-name="湖の奥" data-message="湖の奥。滝の音にまぎれて隠れているかも。"></button>
+    <button class="hotspot" style="left:77%; top:74%;" data-name="林の中" data-message="林の中。葉っぱのすき間を見てみるにゃ。"></button>
+    <button class="hotspot" style="left:53%; top:53%;" data-name="分かれ道のあたり" data-message="分かれ道のあたり。足あとが残っているかもにゃ。"></button>
+    <button class="hotspot" style="left:60%; top:43%;" data-name="右道の途中" data-message="右道の途中。少し先をよく見るにゃ。"></button>
+    <button class="hotspot" style="left:36%; top:60%;" data-name="左下の道ばた" data-message="左下の道ばた。草むらのそばがあやしいにゃ。"></button>
   </div>
 
   <div class="topbar">
     <div class="panel title-box">
-      <h1 class="title">もふぃなはどこだ</h1>
+      <h1 class="title">もふぃなを探せ</h1>
       <p class="sub">地図のどこかに、ちびもふぃながランダムでいるにゃ。</p>
     </div>
 
     <div class="actions">
       <button class="btn" id="rerollBtn" type="button">もういちど探す</button>
-      <a class="btn" href="/">森の入口へ戻る</a>
+      <a class="btn" id="backBtn" href="/">森の入口へ戻る</a>
     </div>
   </div>
 
@@ -310,6 +326,9 @@ const rerollBtn = document.getElementById("rerollBtn");
 const toast = document.getElementById("toast");
 const legendText = document.getElementById("legendText");
 const hotspots = Array.from(document.querySelectorAll(".hotspot"));
+const HIT_REDIRECT_URL = "/leaf/jp";
+
+let isRedirecting = false;
 
 const spots = [
   { x:18, y:79, label:"大きな木の近く" },
@@ -326,12 +345,16 @@ function pickRandomSpot() {
   return spots[index];
 }
 
-function placeMofina() {
-  const spot = pickRandomSpot();
+function applySpot(spot) {
   marker.style.left = spot.x + "%";
   marker.style.top = spot.y + "%";
   markerLabel.textContent = spot.label;
   marker.dataset.place = spot.label;
+}
+
+function placeMofina() {
+  const spot = pickRandomSpot();
+  applySpot(spot);
   sessionStorage.setItem("mofina_map_place", JSON.stringify(spot));
 }
 
@@ -344,25 +367,41 @@ function showToast(text) {
   }, 1800);
 }
 
+function goToLeafPage() {
+  if (isRedirecting) return;
+  isRedirecting = true;
+
+  rerollBtn.disabled = true;
+  hotspots.forEach(btn => {
+    btn.disabled = true;
+    btn.style.pointerEvents = "none";
+  });
+
+  sessionStorage.setItem("mofina_map_found", "1");
+
+  setTimeout(() => {
+    window.location.href = HIT_REDIRECT_URL;
+  }, 900);
+}
+
 rerollBtn.addEventListener("click", () => {
+  if (isRedirecting) return;
   placeMofina();
   showToast("ちびもふぃなの場所を変えたにゃ。");
 });
 
 hotspots.forEach(btn => {
   btn.addEventListener("click", () => {
+    if (isRedirecting) return;
+
     const area = btn.dataset.name;
     const msg = btn.dataset.message;
     const current = marker.dataset.place || "";
 
-    if (
-      (area === "大きな木" && current.includes("大きな木")) ||
-      (area === "ドングリの丘" && current.includes("ドングリ")) ||
-      (area === "湖" && current.includes("湖")) ||
-      (area === "林" && current.includes("林"))
-    ) {
-      legendText.textContent = "あたりにゃ。ちびもふぃなを見つけたにゃ。";
-      showToast("正解にゃ。ここにもふぃながいたにゃ。");
+    if (area === current) {
+      legendText.textContent = "あたりにゃ。もふぃなのところへ移動するにゃ。";
+      showToast("正解にゃ。もふぃなのページへ移動するにゃ。");
+      goToLeafPage();
     } else {
       legendText.textContent = msg;
       showToast("まだ違うにゃ。別の場所も見てみるにゃ。");
@@ -374,10 +413,7 @@ const saved = sessionStorage.getItem("mofina_map_place");
 if (saved) {
   try {
     const spot = JSON.parse(saved);
-    marker.style.left = spot.x + "%";
-    marker.style.top = spot.y + "%";
-    markerLabel.textContent = spot.label;
-    marker.dataset.place = spot.label;
+    applySpot(spot);
   } catch (e) {
     placeMofina();
   }
