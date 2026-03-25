@@ -203,7 +203,6 @@ body{
   opacity:.92;
 }
 
-/* ★ここだけ差し替え */
 .hotspot{
   position:absolute;
   transform:translate(-50%,-50%);
@@ -215,6 +214,14 @@ body{
   background:transparent;
   border:none;
   cursor:pointer;
+}
+
+.hotspot-cross{
+  width:12%;
+  height:14%;
+  min-width:72px;
+  min-height:56px;
+  z-index:16;
 }
 
 .hotspot:focus-visible{
@@ -288,7 +295,7 @@ body{
     <button class="hotspot" style="left:74%; top:22%;" data-name="ドングリの丘" data-message="ドングリの丘。ころころ転がる音がしたかも。"></button>
     <button class="hotspot" style="left:44%; top:27%;" data-name="湖の奥" data-message="湖の奥。滝の音にまぎれて隠れているかも。"></button>
     <button class="hotspot" style="left:77%; top:74%;" data-name="林の中" data-message="林の中。葉っぱのすき間を見てみるにゃ。"></button>
-    <button class="hotspot" style="left:53%; top:53%;" data-name="分かれ道のあたり" data-message="分かれ道のあたり。足あとが残っているかもにゃ。"></button>
+    <button class="hotspot hotspot-cross" style="left:53%; top:53%;" data-name="分かれ道のあたり" data-message="分かれ道のあたり。足あとが残っているかもにゃ。"></button>
     <button class="hotspot" style="left:60%; top:43%;" data-name="右道の途中" data-message="右道の途中。少し先をよく見るにゃ。"></button>
     <button class="hotspot" style="left:36%; top:60%;" data-name="左下の道ばた" data-message="左下の道ばた。草むらのそばがあやしいにゃ。"></button>
   </div>
