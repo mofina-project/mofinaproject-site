@@ -40,6 +40,66 @@ h1{
   padding:8px 12px;
   border-radius:999px;
 }
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  border-radius:24px;
+  margin:0 0 28px;
+  border:1px solid #dbe9de;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  background:#eaf4ec;
+}
+.hero img{
+  display:block;
+  width:100%;
+  aspect-ratio:16 / 9;
+  object-fit:cover;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(to top, rgba(20,35,24,.48) 0%, rgba(20,35,24,.18) 35%, rgba(20,35,24,0) 62%),
+    linear-gradient(to right, rgba(20,35,24,.22) 0%, rgba(20,35,24,0) 40%);
+  pointer-events:none;
+}
+.hero-copy{
+  position:absolute;
+  left:24px;
+  bottom:22px;
+  z-index:1;
+  color:#fffdf7;
+  text-shadow:0 2px 10px rgba(0,0,0,.25);
+}
+.hero-copy .line1{
+  display:block;
+  font-size:14px;
+  letter-spacing:.08em;
+  margin-bottom:8px;
+  opacity:.95;
+}
+.hero-copy .line2{
+  display:block;
+  font-size:30px;
+  font-weight:700;
+  line-height:1.25;
+  margin-bottom:6px;
+}
+.hero-copy .line3{
+  display:block;
+  font-size:16px;
+  line-height:1.6;
+  opacity:.98;
+}
+.hero-copy .line4{
+  display:block;
+  font-size:16px;
+  line-height:1.6;
+  opacity:.98;
+}
+
 .list{
   display:grid;
   gap:16px;
@@ -53,9 +113,12 @@ h1{
   border-radius:16px;
   padding:18px;
   box-shadow:0 4px 16px rgba(0,0,0,.04);
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 .card:hover{
   transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(0,0,0,.06);
+  border-color:#cfe3d5;
 }
 .meta{
   font-size:13px;
@@ -75,6 +138,39 @@ h1{
   font-size:12px;
   color:#6a7f70;
 }
+
+@media (max-width:640px){
+  .wrap{
+    padding:24px 12px 56px;
+  }
+  h1{
+    font-size:28px;
+  }
+  .hero{
+    border-radius:18px;
+    margin:0 0 24px;
+  }
+  .hero img{
+    aspect-ratio:4 / 5;
+  }
+  .hero-copy{
+    left:16px;
+    right:16px;
+    bottom:16px;
+  }
+  .hero-copy .line1{
+    font-size:12px;
+    margin-bottom:6px;
+  }
+  .hero-copy .line2{
+    font-size:23px;
+  }
+  .hero-copy .line3,
+  .hero-copy .line4{
+    font-size:14px;
+    line-height:1.5;
+  }
+}
 </style>
 </head>
 <body>
@@ -86,6 +182,16 @@ h1{
 
   <h1>Story</h1>
   <p class="lead">もふぃなのお話を読める場所にゃ。</p>
+
+  <section class="hero" aria-label="Story の挿入画">
+    <img src="./images/story/story_cover.png" alt="朝の光が差し込む森の中で、もふぃなが静かに座っている風景">
+    <div class="hero-copy">
+      <span class="line1">Mofina Story</span>
+      <span class="line2">ひかりのこぼれる森で</span>
+      <span class="line3">小さなお話が、</span>
+      <span class="line4">そっとはじまります。</span>
+    </div>
+  </section>
 
   <div id="story-list" class="list"></div>
 
