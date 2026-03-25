@@ -79,6 +79,4 @@ tags: 散歩、リス、どんぐり
 
 
 
-これを動画用に分割して
-
-![story02_02](/images/story/story02_02.jpg)
+![story02_04](/images/story/story02_04.png)
