@@ -40,6 +40,66 @@ h1{
   padding:8px 12px;
   border-radius:999px;
 }
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  border-radius:24px;
+  margin:0 0 28px;
+  border:1px solid #dbe9de;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  background:#eaf4ec;
+}
+.hero img{
+  display:block;
+  width:100%;
+  aspect-ratio:16 / 9;
+  object-fit:cover;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(to top, rgba(20,35,24,.52) 0%, rgba(20,35,24,.22) 36%, rgba(20,35,24,0) 62%),
+    linear-gradient(to right, rgba(20,35,24,.20) 0%, rgba(20,35,24,0) 42%);
+  pointer-events:none;
+}
+.hero-copy{
+  position:absolute;
+  left:24px;
+  bottom:22px;
+  z-index:1;
+  color:#fffdf7;
+  text-shadow:0 2px 10px rgba(0,0,0,.25);
+}
+.hero-copy .line1{
+  display:block;
+  font-size:14px;
+  letter-spacing:.08em;
+  margin-bottom:8px;
+  opacity:.95;
+}
+.hero-copy .line2{
+  display:block;
+  font-size:30px;
+  font-weight:700;
+  line-height:1.25;
+  margin-bottom:6px;
+}
+.hero-copy .line3{
+  display:block;
+  font-size:16px;
+  line-height:1.6;
+  opacity:.98;
+}
+.hero-copy .line4{
+  display:block;
+  font-size:16px;
+  line-height:1.6;
+  opacity:.98;
+}
+
 .list{
   display:grid;
   gap:16px;
@@ -75,6 +135,33 @@ h1{
   font-size:12px;
   color:#6a7f70;
 }
+
+@media (max-width:640px){
+  .hero{
+    border-radius:18px;
+    margin:0 0 24px;
+  }
+  .hero img{
+    aspect-ratio:4 / 5;
+  }
+  .hero-copy{
+    left:16px;
+    right:16px;
+    bottom:16px;
+  }
+  .hero-copy .line1{
+    font-size:12px;
+    margin-bottom:6px;
+  }
+  .hero-copy .line2{
+    font-size:23px;
+  }
+  .hero-copy .line3,
+  .hero-copy .line4{
+    font-size:14px;
+    line-height:1.5;
+  }
+}
 </style>
 </head>
 <body>
@@ -86,6 +173,16 @@ h1{
 
   <h1>Idobata</h1>
   <p class="lead">もふぃなの井戸端会議にゃ。</p>
+
+  <section class="hero" aria-label="Idobata の挿入画">
+    <img src="/images/idobata/idobata_cover.png" alt="静かな森の中、少し考えごとをしたくなるような空気が漂う風景">
+    <div class="hero-copy">
+      <span class="line1">Idobata</span>
+      <span class="line2">森の奥で、そっと交わされる話</span>
+      <span class="line3">ここには、少しだけ</span>
+      <span class="line4">深い言葉が落ちています。</span>
+    </div>
+  </section>
 
   <div id="idobata-list" class="list"></div>
 
