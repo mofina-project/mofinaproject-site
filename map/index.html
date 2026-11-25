@@ -266,6 +266,7 @@ body{
   .legend{bottom:14px;left:14px;right:14px;max-width:none}
 }
 </style>
+<link rel="stylesheet" href="/assets/bgm/bgm.css">
 </head>
 <body>
 
@@ -307,6 +308,7 @@ body{
     </div>
 
     <div class="actions">
+      <button id="page-bgm-toggle" type="button" aria-pressed="false">BGM</button>
       <button class="btn" id="rerollBtn" type="button">もういちど探す</button>
       <a class="btn" id="backBtn" href="/">森の入口へ戻る</a>
     </div>
@@ -423,5 +425,7 @@ window.addEventListener("pageshow", (event) => {
 });
 </script>
 
+<audio id="page-bgm" src="/assets/bgm/Where_the_Green_Leaves_Play.mp3" preload="none" loop></audio>
+<script src="/assets/bgm/bgm.js"></script>
 </body>
 </html>

@@ -1,0 +1,29 @@
+#page-bgm-toggle{
+  min-height:36px;
+  padding:6px 9px;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:999px;
+  background:rgba(7,21,15,.80);
+  color:#fff;
+  font:inherit;
+  font-size:13px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+#page-bgm-toggle[aria-pressed="true"]{
+  border-color:#b1d2a5;
+  background:#284634;
+}
+
+#page-bgm-toggle:focus-visible{
+  outline:2px solid #feeb70;
+  outline-offset:2px;
+}
+
+#page-bgm-toggle.bgm-chat{
+  position:fixed;
+  top:14px;
+  right:14px;
+  z-index:9999;
+}

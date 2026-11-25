@@ -6,8 +6,10 @@
   <title>お話の森 | mofinaproject</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="/assets/mofina.ico">
+<link rel="stylesheet" href="/assets/bgm/bgm.css">
 </head>
 <body>
+<button id="page-bgm-toggle" class="bgm-chat" type="button" aria-pressed="false">BGM</button>
 <a class="homeBack" href="/" aria-label="森の入口へ戻る">← 森の入口へ</a>  <main class="screen">
     <section class="panel">
       <div id="chatLog" class="chatLog"></div>
@@ -73,5 +75,7 @@
       }
     });
   </script>
+<audio id="page-bgm" src="/assets/bgm/Light_Through_the_Canopy.mp3" preload="none" loop></audio>
+<script src="/assets/bgm/bgm.js"></script>
 </body>
 </html>

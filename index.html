@@ -322,6 +322,7 @@ top:calc(76% - 3px)
 .hint{animation:none!important;opacity:1;transform:none}
 }
 </style>
+<link rel="stylesheet" href="/assets/bgm/bgm.css">
 </head>
 
 <body>
@@ -355,11 +356,11 @@ I'm Mofina.<br>
 <details class="forest-menu" id="forest-menu">
 <summary><span data-ja>メニュー</span><span data-en style="display:none;">Menu</span></summary>
 <ul>
-<li><a href="https://mofina-mori-market.siomoe2.chatgpt.site/"><span lang="ja">森のおみせ</span></a></li>
 <li><a href="/leaf/jp/"><span data-ja>もふぃなとお話</span><span data-en style="display:none;">Talk with Mofina</span></a></li>
+<li><a href="/map/"><span data-ja>もふぃなはどこだ</span><span data-en style="display:none;">Where is Mofina?</span></a></li>
 <li><a href="/story/">Story</a></li>
 <li><a href="/idobata/"><span data-ja>井戸端会議</span><span data-en style="display:none;">Idobata</span></a></li>
-<li><a href="/map/"><span data-ja>もふぃなはどこだ</span><span data-en style="display:none;">Where is Mofina?</span></a></li>
+<li><a href="https://mofina-mori-market.siomoe2.chatgpt.site/"><span lang="ja">森のおみせ</span></a></li>
 </ul>
 </details>
 
@@ -369,6 +370,7 @@ I'm Mofina.<br>
 </div>
 
 <div class="lang">
+<button id="page-bgm-toggle" type="button" aria-pressed="false">BGM</button>
 <button id="btn-ja" aria-pressed="true" type="button">JP</button>
 <button id="btn-en" aria-pressed="false" type="button">EN</button>
 </div>
@@ -574,5 +576,7 @@ talk.addEventListener("click", (e) => {
 })
 </script>
 
+<audio id="page-bgm" src="/assets/bgm/Where_the_Ferns_Unfold.mp3" preload="none" loop></audio>
+<script src="/assets/bgm/bgm.js"></script>
 </body>
 </html>
