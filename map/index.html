@@ -30,18 +30,15 @@ body{
   width:100%;
   height:100%;
   min-height:100dvh;
-  display:grid;
-  grid-template-rows:auto minmax(0, 1fr);
   background:
     radial-gradient(1200px 700px at 50% 18%, rgba(255,255,255,.08), rgba(255,255,255,0) 55%),
     linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.45));
 }
 
 .map-wrap{
-  position:relative;
-  grid-row:2;
+  position:absolute;
+  inset:0;
   overflow:hidden;
-  container-type:size;
 }
 
 .map-image{
@@ -69,9 +66,10 @@ body{
 }
 
 .topbar{
-  grid-row:1;
+  position:absolute;
+  inset:0 0 auto;
   padding:12px 16px;
-  background:#152b1d;
+  pointer-events:none;
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
@@ -92,8 +90,11 @@ body{
   max-width:min(78vw, 560px);
 }
 
+.topbar :is(button, a){pointer-events:auto}
+
 .title-box #page-bgm-toggle{
-  margin-top:8px;
+  display:block;
+  margin-top:6px;
 }
 
 .title{
@@ -147,13 +148,16 @@ body{
 
 .marker{
   position:absolute;
-  width:min(144px, 20cqh);
-  height:min(144px, 20cqh);
+  --marker-size:clamp(58px, 14dvh, 104px);
+  width:var(--marker-size);
+  height:var(--marker-size);
+  top:max(var(--spot-top, 50%), calc(var(--header-bottom, 0px) + var(--marker-size) / 2));
+  overflow:hidden;
   border:0;
   padding:0;
   background:none;
   cursor:pointer;
-  transform:translate(-50%,-92%);
+  transform:translate(-50%,-50%);
   z-index:25;
   transition:left .45s ease, top .45s ease;
 }
@@ -164,41 +168,15 @@ body{
 }
 
 .marker img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  display:block;
-  filter:drop-shadow(0 8px 10px rgba(0,0,0,.28));
-}
-
-.marker-fallback{
-  width:100%;
-  height:100%;
-  border-radius:999px;
-  display:grid;
-  place-items:center;
-  background:radial-gradient(circle at 35% 35%, #fff6c9 0%, #feeb70 36%, #d0a92f 100%);
-  color:#203222;
-  font-weight:700;
-  font-size:18px;
-  box-shadow:
-    0 0 0 5px rgba(254,235,112,.18),
-    0 8px 18px rgba(0,0,0,.24);
-}
-
-.badge{
   position:absolute;
   left:50%;
-  bottom:calc(100% + 10px);
-  transform:translateX(-50%);
-  white-space:nowrap;
-  background:rgba(17,25,18,.78);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:999px;
-  padding:6px 10px;
-  font-size:12px;
-  line-height:1;
-  box-shadow:0 8px 18px rgba(0,0,0,.22);
+  top:39%;
+  width:250%;
+  height:250%;
+  transform:translate(-50%,-50%);
+  object-fit:contain;
+  display:block;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));
 }
 
 .legend{
@@ -280,8 +258,6 @@ body{
   .title{font-size:20px}
   .sub{font-size:12px}
   .btn{font-size:13px;padding:9px 12px}
-  .marker{width:min(120px, 20cqh);height:min(120px, 20cqh)}
-  .badge{font-size:11px}
   .legend{bottom:14px;left:14px;right:14px;max-width:none}
 }
 </style>
@@ -313,14 +289,11 @@ body{
     >
 
     <button class="marker" id="mofinaMarker" type="button" aria-label="ちびもふぃなを見つけた">
-      <span class="badge" id="markerLabel">もふぃな発見？</span>
       <img
         id="markerImg"
         src="/assets/mofina_chibi.png"
         alt=""
-        onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
       >
-      <span class="marker-fallback" style="display:none;">も</span>
     </button>
 
     <!-- クリック範囲 7か所 -->
@@ -344,7 +317,10 @@ body{
 
 <script>
 const marker = document.getElementById("mofinaMarker");
-const markerLabel = document.getElementById("markerLabel");
+const topbar = document.querySelector(".topbar");
+new ResizeObserver(() => {
+  marker.style.setProperty("--header-bottom", topbar.offsetHeight + "px");
+}).observe(topbar);
 const rerollBtn = document.getElementById("rerollBtn");
 const toast = document.getElementById("toast");
 const legendText = document.getElementById("legendText");
@@ -377,8 +353,7 @@ function pickRandomSpot(excludeLabel = "") {
 
 function applySpot(spot) {
   marker.style.left = spot.x + "%";
-  marker.style.top = spot.y + "%";
-  markerLabel.textContent = spot.label;
+  marker.style.setProperty("--spot-top", spot.y + "%");
   marker.dataset.place = spot.label;
 }
 
