@@ -139,10 +139,23 @@ backdrop-filter:blur(8px)
 }
 
 .forest-menu summary{cursor:pointer;width:max-content}
-.forest-menu a{display:block;margin-top:6px;text-decoration:none}
+.forest-menu ul{
+display:grid;
+gap:6px;
+max-height:calc(100vh - 82px);
+max-height:calc(100dvh - 82px);
+overflow-y:auto;
+overscroll-behavior:contain;
+list-style:none;
+margin:6px 0 0;
+padding:0
+}
+
+.forest-menu a{display:block;text-decoration:none}
 .forest-menu a:hover{background:#214130}
 .forest-menu[open] + .hint{visibility:hidden}
 .forest-menu :focus-visible{outline:2px solid rgb(var(--glow));outline-offset:3px}
+.forest-menu a:focus-visible{outline-offset:-4px}
 .ui:not(.is-visible) .forest-menu{visibility:hidden}
 
 .portal{
@@ -341,7 +354,13 @@ I'm Mofina.<br>
 
 <details class="forest-menu" id="forest-menu">
 <summary><span data-ja>メニュー</span><span data-en style="display:none;">Menu</span></summary>
-<a href="https://mofina-mori-market.siomoe2.chatgpt.site/"><span lang="ja">森のおみせ</span></a>
+<ul>
+<li><a href="https://mofina-mori-market.siomoe2.chatgpt.site/"><span lang="ja">森のおみせ</span></a></li>
+<li><a href="/leaf/jp/"><span data-ja>もふぃなとお話</span><span data-en style="display:none;">Talk with Mofina</span></a></li>
+<li><a href="/story/">Story</a></li>
+<li><a href="/idobata/"><span data-ja>井戸端会議</span><span data-en style="display:none;">Idobata</span></a></li>
+<li><a href="/map/"><span data-ja>もふぃなはどこだ</span><span data-en style="display:none;">Where is Mofina?</span></a></li>
+</ul>
 </details>
 
 <div class="hint" id="hint">
