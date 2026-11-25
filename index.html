@@ -75,8 +75,8 @@ transition:opacity .35s ease
 
 .hint{
 position:absolute;
-left:18px;
-top:18px;
+left:16px;
+top:66px;
 padding:10px 12px;
 background:var(--panel);
 border:1px solid rgba(255,255,255,.16);
@@ -115,6 +115,35 @@ font-size:13px;
 cursor:pointer;
 backdrop-filter:blur(8px)
 }
+
+.forest-menu{
+position:absolute;
+top:16px;
+left:16px;
+z-index:5;
+pointer-events:auto;
+width:max-content;
+max-width:calc(100% - 32px)
+}
+
+.forest-menu summary,.forest-menu a{
+min-height:44px;
+padding:10px 14px;
+border:1px solid rgba(255,255,255,.22);
+border-radius:14px;
+background:rgba(7,21,15,.88);
+color:var(--text);
+font-size:14px;
+line-height:22px;
+backdrop-filter:blur(8px)
+}
+
+.forest-menu summary{cursor:pointer;width:max-content}
+.forest-menu a{display:block;margin-top:6px;text-decoration:none}
+.forest-menu a:hover{background:#214130}
+.forest-menu[open] + .hint{visibility:hidden}
+.forest-menu :focus-visible{outline:2px solid rgb(var(--glow));outline-offset:3px}
+.ui:not(.is-visible) .forest-menu{visibility:hidden}
 
 .portal{
 position:absolute;
@@ -310,6 +339,11 @@ I'm Mofina.<br>
 
 <div class="ui" id="ui">
 
+<details class="forest-menu" id="forest-menu">
+<summary><span data-ja>メニュー</span><span data-en style="display:none;">Menu</span></summary>
+<a href="https://mofina-mori-market.siomoe2.chatgpt.site/"><span lang="ja">森のおみせ</span></a>
+</details>
+
 <div class="hint" id="hint">
 <span data-ja>光るものを見つけてね。</span>
 <span data-en style="display:none;">Find something that glows.</span>
@@ -361,6 +395,21 @@ I'm Mofina.<br>
 </main>
 
 <script>
+const forestMenu = document.getElementById("forest-menu")
+const forestMenuToggle = forestMenu.querySelector("summary")
+
+document.addEventListener("click", event => {
+  if (forestMenu.open && !forestMenu.contains(event.target)) forestMenu.open = false
+})
+
+forestMenu.addEventListener("keydown", event => {
+  if (event.key === "Escape" && forestMenu.open) {
+    event.preventDefault()
+    forestMenu.open = false
+    forestMenuToggle.focus()
+  }
+})
+
 const map = document.getElementById("map")
 const ui = document.getElementById("ui")
 const loader = document.getElementById("loader")
